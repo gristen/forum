@@ -1,68 +1,228 @@
+<header class="forum-header">
 
-    <header class="forum-header py-2 sticky-top">
-        <div class="container">
-            <div class="row align-items-center g-2">
+    <div class="container">
 
-                <!-- Логотип -->
-                <div class="col-auto col-lg-3 d-flex align-items-center ">
-                    <a href="#" class="text-decoration-none d-flex align-items-center gap-2">
-                        <div class="bg-primary rounded-3 d-flex align-items-center justify-content-center text-white fw-bold"
-                             style="width: 38px; height: 38px; font-size: 1.2rem;">
-                            F
-                        </div>
-                        <span class="fw-bold fs-5 text-dark d-none d-sm-inline">
-                               <a class="text-decoration-none text-reset" href="{{route('home')}}">Форум<span class="text-primary">.hub</span></a>
-                            </span>
-                    </a>
-                </div>
+        <div class="forum-header-inner">
 
-                <!-- Поиск -->
-                <div class="col d-none d-md-block">
-                    <div class="position-relative">
-                        <i class="bi bi-search search-icon"></i>
-                        <input type="text" class="form-control search-input w-100"
-                               placeholder="Поиск по темам, авторам, тегам...">
-                    </div>
-                </div>
+            {{-- =====================================================
+                 ЛОГОТИП
+            ====================================================== --}}
 
-                <!-- Правая часть -->
-                <div class="col-auto ms-auto d-flex align-items-center gap-3">
-                    @if(\Illuminate\Support\Facades\Auth::check())
-                    <!-- Уведомления -->
-                    <a href="#" class="text-secondary position-relative" style="font-size: 1.25rem;">
-                        <i class="bi bi-bell"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                              style="font-size: 0.6rem; padding: 3px 6px;">
-                                3
-                            </span>
-                    </a>
+            <div class="forum-logo">
 
-                    <!-- Сообщения -->
-                    <a href="#" class="text-secondary" style="font-size: 1.25rem;">
-                        <i class="bi bi-envelope"></i>
-                    </a>
-                    <!-- Аватар + имя -->
-                    <div class="dropdown user-avatar-dropdown">
-                        <a href="#" class="d-flex align-items-center gap-2 text-decoration-none text-dark"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{asset('storage/avatars/'. auth()->user()->avatar)}}"
-                                 alt="avatar" class="avatar-big">
-                            <span class="d-none d-sm-inline fw-medium">{{auth()->user()->name}}</span>
-                            <i class="bi bi-chevron-down text-secondary-emphasis small"></i>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
-                            <li><a class="dropdown-item" href="{{route('profile', ['value'=>Auth::user()->name])}}"><i class="bi bi-person me-2"></i>Профиль</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Настройки</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="{{route('logout')}}"><i class="bi bi-box-arrow-right me-2"></i>Выйти</a></li>
-                        </ul>
-                    </div>
-                    @else
-                        <a href="{{route('login')}}">Авторизоваться</a>
-                    @endif
+                <a
+                    href="{{ route('home') }}"
+                    class="forum-logo-link"
+                >
+
+                    <span class="forum-logo-icon">
+                        F
+                    </span>
+
+                    <span class="forum-logo-text">
+                        Форум<span>.hub</span>
+                    </span>
+
+                </a>
+
+            </div>
+
+
+            {{-- =====================================================
+                 ПОИСК
+            ====================================================== --}}
+
+            <div class="forum-search">
+
+                <div class="forum-search-box">
+
+                    <input
+                        type="text"
+                        class="forum-search-input"
+                        placeholder="Поиск по темам, авторам, тегам..."
+                    >
+
+                    <i class="bi bi-search forum-search-icon"></i>
+
                 </div>
 
             </div>
-        </div>
-    </header>
 
+
+            {{-- =====================================================
+                 ПРАВАЯ ЧАСТЬ
+            ====================================================== --}}
+
+            <div class="forum-header-actions">
+
+                @if(\Illuminate\Support\Facades\Auth::check())
+
+                    {{-- =================================================
+                         УВЕДОМЛЕНИЯ
+                    ================================================== --}}
+
+                    <a
+                        href="#"
+                        class="forum-header-action"
+                        title="Уведомления"
+                    >
+
+                        <i class="bi bi-bell"></i>
+
+                        <span class="forum-notification-badge">
+                            3
+                        </span>
+
+                    </a>
+
+
+                    {{-- =================================================
+                         СООБЩЕНИЯ
+                    ================================================== --}}
+
+                    <a
+                        href="{{route('messages')}}"
+                        class="forum-header-action"
+                        title="Сообщения"
+                    >
+
+                        <i class="bi bi-envelope"></i>
+
+                    </a>
+
+
+                    {{-- =================================================
+                         PROFILE
+                    ================================================== --}}
+
+                    <div class="dropdown forum-user-dropdown">
+
+                        <a
+                            href="#"
+                            class="forum-user"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                        >
+
+                            <img
+                                src="{{ auth()->user()->avatar
+                                    ? asset('storage/avatars/' . auth()->user()->avatar)
+                                    : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=8b5cf6&color=fff&size=80'
+                                }}"
+                                alt="{{ auth()->user()->name }}"
+                                class="forum-header-avatar"
+                            >
+
+                            <span class="forum-user-name">
+                                {{ auth()->user()->name }}
+                            </span>
+
+                            <i class="bi bi-chevron-down forum-user-arrow"></i>
+
+                        </a>
+
+
+                        {{-- =================================================
+                             DROPDOWN
+                        ================================================== --}}
+
+                        <ul class="dropdown-menu dropdown-menu-end forum-user-menu">
+
+                            {{-- Профиль --}}
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="{{ route('profile', ['value' => Auth::user()->name]) }}"
+                                >
+
+                                    <i class="bi bi-person"></i>
+
+                                    <span>
+                                        Профиль
+                                    </span>
+
+                                </a>
+
+                            </li>
+
+
+                            {{-- Настройки --}}
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item"
+                                    href="#"
+                                >
+
+                                    <i class="bi bi-gear"></i>
+
+                                    <span>
+                                        Настройки
+                                    </span>
+
+                                </a>
+
+                            </li>
+
+
+                            {{-- Разделитель --}}
+
+                            <li>
+
+                                <hr class="dropdown-divider">
+
+                            </li>
+
+
+                            {{-- Выход --}}
+
+                            <li>
+
+                                <a
+                                    class="dropdown-item forum-logout"
+                                    href="{{ route('logout') }}"
+                                >
+
+                                    <i class="bi bi-box-arrow-right"></i>
+
+                                    <span>
+                                        Выйти
+                                    </span>
+
+                                </a>
+
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                @else
+
+                    {{-- =================================================
+                         LOGIN
+                    ================================================== --}}
+
+                    <a
+                        href="{{ route('login') }}"
+                        class="forum-login-button"
+                    >
+
+                        <i class="bi bi-box-arrow-in-right"></i>
+
+                        Авторизоваться
+
+                    </a>
+
+                @endif
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>

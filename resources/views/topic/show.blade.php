@@ -2,203 +2,305 @@
 
 @section('content')
 
-    <div class="container py-4">
+    <div class="forum-page">
 
-        {{-- Breadcrumbs --}}
-        <nav class="mb-3">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item">
-                    <a href="#" class="text-decoration-none">Форум</a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="#" class="text-decoration-none">{{$topic->category->name}}</a>
-                </li>
-                <li class="breadcrumb-item active">
-                    {{$topic->short_title}}
-                </li>
-            </ol>
-        </nav>
+        <div class="container py-4">
+
+            {{-- =====================================================
+                 BREADCRUMBS
+            ====================================================== --}}
+
+            <nav class="forum-breadcrumb mb-3">
+
+                <ol class="breadcrumb mb-0">
+
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            Форум
+                        </a>
+                    </li>
+
+                    <li class="breadcrumb-item">
+                        <a href="#">
+                            {{ $topic->category->name }}
+                        </a>
+                    </li>
+
+                    <li class="breadcrumb-item active">
+                        {{ $topic->short_title }}
+                    </li>
+
+                </ol>
+
+            </nav>
 
 
-        {{-- Topic header --}}
-        <div class="card border-0 shadow-sm mb-3">
+            {{-- =====================================================
+                 TOPIC HEADER
+            ====================================================== --}}
 
-            <div class="card-body p-4">
+            <div class="forum-topic-card mb-3">
 
-                <div class="d-flex justify-content-between align-items-start gap-3">
+                <div class="forum-topic-card-body">
 
-                    <div>
-                        <div class="text-muted small mb-2">
-                            Вопрос
+                    <div class="d-flex justify-content-between align-items-start gap-3">
+
+                        <div class="min-width-0">
+
+                            <div class="forum-topic-label">
+                                Вопрос
+                            </div>
+
+                            <h1 class="forum-topic-title">
+                                {{ $topic->title }}
+                            </h1>
+
+                            <div class="forum-topic-meta">
+
+                                <span>
+
+                                    <i class="bi bi-person"></i>
+
+                                    <a
+                                        href="{{ route('profile', $topic->user->name) }}"
+                                    >
+                                        {{ $topic->user->name }}
+                                    </a>
+
+                                </span>
+
+
+                                <span>
+
+                                    <i class="bi bi-clock"></i>
+
+                                    {{ $topic->created_at->diffForHumans() }}
+
+                                </span>
+
+
+                                <span>
+
+                                    <i class="bi bi-chat-left-text"></i>
+
+                                    {{ $topic->posts_count }} сообщений
+
+                                </span>
+
+                            </div>
+
                         </div>
 
-                        <h1 class="h3 fw-bold mb-2">
-                            {{$topic->title}}
-                        </h1>
 
-                        <div class="d-flex align-items-center gap-3 text-muted small">
+                        <button
+                            type="button"
+                            class="forum-topic-more"
+                        >
+                            <i class="bi bi-three-dots"></i>
+                        </button>
 
-                        <span>
-                            <i class="bi bi-person me-1"></i>
-                            <a class="text-decoration-none text-muted" href="{{ route('profile', $topic->user->name)}}"> {{$topic->user->name }} </a>
-                        </span>
-
-                            <span>
-                            <i class="bi bi-clock me-1"></i>
-                           {{ $topic->created_at->diffForHumans() }}
-                            </span>
-
-                            <span>
-                            <i class="bi bi-chat-left-text me-1"></i>
-                            {{$topic->posts_count}} сообщений
-                        </span>
-
-                        </div>
                     </div>
-
-                    <button class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-three-dots"></i>
-                    </button>
 
                 </div>
 
             </div>
 
-        </div>
+
+            {{-- =====================================================
+                 POSTS
+            ====================================================== --}}
+
+            <div class="d-flex flex-column gap-3">
+
+                @foreach($posts as $post)
+
+                    <article class="forum-post">
+
+                        <div class="row g-0">
+
+                            {{-- =================================================
+                                 USER
+                            ================================================== --}}
+
+                            <div class="col-md-2 forum-post-user">
+
+                                <div class="forum-post-user-inner">
+
+                                    @if($post->user->avatar)
+
+                                        <img
+                                            src="{{ asset('storage/avatars/' . $post->user->avatar) }}"
+                                            alt="{{ $post->user->name }}"
+                                            class="forum-post-avatar"
+                                        >
+
+                                    @else
+
+                                        <div class="forum-post-avatar forum-post-avatar-placeholder">
+                                            {{ mb_strtoupper(mb_substr($post->user->name, 0, 1)) }}
+                                        </div>
+
+                                    @endif
 
 
-        {{-- Posts --}}
-        <div class="d-flex flex-column gap-3">
+                                    <div class="forum-post-username">
+                                        {{ $post->user->name }}
+                                    </div>
 
-            {{-- Post --}}
-            @foreach($posts as $post)
-                <div class="card border-0 shadow-sm overflow-hidden">
 
-                    <div class="row g-0">
+                                    <span class="badge {{ $post->user->role->badge_class }} mb-3">
 
-                        {{-- User --}}
-                        <div class="col-md-2 border-end bg-light">
+                                        <i class="{{ $post->user->role->icon_class }}"></i>
 
-                            <div class="p-4 text-center">
+                                        {{ $post->user->role->display_name }}
 
-                                <div class="rounded-circle bg-primary text-white
-                                    d-flex align-items-center justify-content-center
-                                    mx-auto mb-3"
-                                     style="width: 72px; height: 72px; font-size: 28px;">
+                                    </span>
 
-                                    A
+
+                                    <div class="forum-post-user-info">
+
+                                        <div>
+                                            Сообщений: 128
+                                        </div>
+
+                                        <div>
+                                            На форуме с 2025
+                                        </div>
+
+                                    </div>
 
                                 </div>
 
-                                <div class="fw-semibold mb-1">
-                                    {{$post->user->name}}
+                            </div>
+
+
+                            {{-- =================================================
+                                 MESSAGE
+                            ================================================== --}}
+
+                            <div class="col-md-10">
+
+                                <div class="forum-post-content">
+
+                                    <div class="forum-post-top">
+
+                                        <span></span>
+
+                                        <span class="forum-post-date">
+                                            {{ $post->created_at->diffForHumans() }}
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="forum-post-text">
+                                        {!! $post->content !!}
+                                    </div>
+
                                 </div>
 
-                                <span class="badge {{$topic->user->role->badge_class}} mb-3">
-                            {{$topic->user->role->display_name}}
-                            </span>
 
-                                <div class="small text-muted">
-                                    Сообщений: 128
-                                </div>
+                                {{-- =================================================
+                                     POST FOOTER
+                                ================================================== --}}
 
-                                <div class="small text-muted">
-                                    На форуме с 2025
+                                <div class="forum-post-footer">
+
+                                    <div class="d-flex gap-2">
+
+                                        <button
+                                            type="button"
+                                            class="forum-post-button"
+                                        >
+
+                                            <i class="bi bi-hand-thumbs-up"></i>
+
+                                            5
+
+                                        </button>
+
+
+                                        <button
+                                            type="button"
+                                            class="forum-post-button"
+                                        >
+
+                                            <i class="bi bi-quote"></i>
+
+                                            Цитировать
+
+                                        </button>
+
+                                    </div>
+
+
+                                    <button
+                                        type="button"
+                                        class="forum-post-button forum-post-link"
+                                    >
+
+                                        <i class="bi bi-link-45deg"></i>
+
+                                    </button>
+
                                 </div>
 
                             </div>
 
                         </div>
 
+                    </article>
 
-                        {{-- Message --}}
-                        <div class="col-md-10">
+                @endforeach
 
-                            <div class="p-4">
-
-                                <div class="d-flex justify-content-between
-                                    align-items-center mb-3">
-
-                            <span class="text-muted small">
-
-                            </span>
-
-                                    <span class="text-muted small">
-                                {{$post->created_at->diffForHumans()}}
-                            </span>
-
-                                </div>
-
-                                <div class="fs-6" style="line-height: 1.7;">
-                                    {!! $post->content !!}
-
-                                </div>
-
-                            </div>
+            </div>
 
 
-                            {{-- Post footer --}}
-                            <div class="px-4 py-3 border-top
-                                d-flex justify-content-between
-                                align-items-center">
+            {{-- =====================================================
+                 PAGINATION
+            ====================================================== --}}
 
-                                <div class="d-flex gap-2">
+            <div class="forum-pagination my-4">
 
-                                    <button class="btn btn-sm btn-light">
-                                        <i class="bi bi-hand-thumbs-up me-1"></i>
-                                        5
-                                    </button>
+                {{ $posts->links() }}
 
-                                    <button class="btn btn-sm btn-light">
-                                        <i class="bi bi-quote me-1"></i>
-                                        Цитировать
-                                    </button>
+            </div>
 
-                                </div>
 
-                                <button class="btn btn-sm btn-light">
-                                    <i class="bi bi-link-45deg"></i>
-                                </button>
+            {{-- =====================================================
+                 REPLY
+            ====================================================== --}}
 
-                            </div>
+            <div class="forum-reply">
 
-                        </div>
+                <div class="forum-reply-body">
+
+                    <h5 class="forum-reply-title">
+                        Ответить в теме
+                    </h5>
+
+
+                    <textarea
+                        class="forum-reply-input"
+                        rows="6"
+                        placeholder="Напишите сообщение..."
+                    ></textarea>
+
+
+                    <div class="d-flex justify-content-end">
+
+                        <button
+                            type="button"
+                            class="forum-primary-button"
+                        >
+
+                            <i class="bi bi-send"></i>
+
+                            Отправить
+
+                        </button>
 
                     </div>
-
-                </div>
-            @endforeach
-
-        </div>
-
-
-        {{-- Pagination --}}
-        <div class="d-flex justify-content-center my-4">
-            {{$posts->links()}}
-        </div>
-
-
-        {{-- Reply --}}
-        <div class="card border-0 shadow-sm">
-
-            <div class="card-body p-4">
-
-                <h5 class="fw-bold mb-3">
-                    Ответить в теме
-                </h5>
-
-                <textarea
-                    class="form-control mb-3"
-                    rows="6"
-                    placeholder="Напишите сообщение..."
-                ></textarea>
-
-                <div class="d-flex justify-content-end">
-
-                    <button class="btn btn-primary px-4">
-                        <i class="bi bi-send me-2"></i>
-                        Отправить
-                    </button>
 
                 </div>
 
