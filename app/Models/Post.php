@@ -19,7 +19,7 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function topics()
+    public function topic()
     {
         return $this->belongsTo(Topic::class);
     }

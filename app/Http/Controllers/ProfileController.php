@@ -13,9 +13,22 @@ class ProfileController extends Controller
             ->when(is_numeric($value), function ($query) use ($value) {
                 $query->where('id', $value);
             })
-        ->when(is_string($value), function ($query) use ($value) {
-            $query->where('name', $value);
-        })->firstOrFail();
+            ->when(is_string($value), function ($query) use ($value) {
+                $query->where('name', $value);
+            })
+            ->withCount('posts')
+            ->withCount('topics')
+            ->with([
+                'topics' => fn ($query) => $query
+                    ->latest()
+                    ->withCount('posts')
+                    ->limit(5),
+
+                'posts' => fn ($query) => $query
+                    ->latest()
+                    ->limit(5)
+                    ->with('topic')
+            ])->firstOrFail();
 
         return view('profile', compact('user'));
     }

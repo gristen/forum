@@ -19,15 +19,15 @@ new class extends Component {
             ->withCount('topics')
             ->with([
                 'topics' => fn($q) => $q
-                ->withCount('posts')
-                ->latest('updated_at')
-                ->with([
-                    'user',
-                    'posts' => fn($q) => $q
-                    ->latest()
-                    ->limit(1)
-                        ->with('user'),
-                ]),
+                    ->withCount('posts')
+                    ->latest('updated_at')
+                    ->with([
+                        'user',
+                        'posts' => fn($q) => $q
+                            ->latest()
+                            ->limit(1)
+                            ->with('user'),
+                    ]),
             ])
             ->get();
 
@@ -98,29 +98,35 @@ new class extends Component {
                                            class="text-primary text-decoration-none small fw-medium"> Все темы <i
                                                 class="bi bi-arrow-right ms-1"></i> </a></div> <!-- Темы категории -->
 
-                                    <div class="category-body"> @forelse($category->topics as $topic)
+                                    <div class="category-body">
+                                        @forelse($category->topics as $topic)
                                             @php $lastPost = $topic->posts->first(); @endphp
                                             <div
                                                 class="sub-forum d-flex flex-wrap align-items-center justify-content-between">
                                                 <!-- Информация о теме -->
                                                 <div class="d-flex align-items-start gap-3"><i
                                                         class="bi bi-chat-square-text text-secondary-emphasis mt-1"> </i>
-                                                    <div><a href=""
+                                                    <div>
+                                                        <a href="{{route('topic.show',['topic'=>$topic,'slug'=> $topic->slug])}}"
                                                             class="text-decoration-none fw-medium text-dark"> {{ $topic->title }} </a>
                                                         <div
                                                             class="d-flex flex-wrap align-items-center gap-2 small text-secondary-emphasis">
-                                                            <span> <i
-                                                                    class="bi bi-chat me-1"></i> {{ $topic->posts_count }} {{ trans_choice('сообщение|сообщения|сообщений', $topic->posts_count) }} </span>
+                                                            <span>
+                                                                <i class="bi bi-chat me-1">
+
+                                                                </i> {{ $topic->posts_count }} {{ trans_choice('сообщение|сообщения|сообщений', $topic->posts_count) }} </span>
                                                         </div>
                                                     </div>
-                                                </div> <!-- Последний пост --> @if($lastPost)
+                                                </div> <!-- Последний пост -->
+                                                @if($lastPost)
                                                     <div
                                                         class="d-flex align-items-center gap-3 small text-secondary-emphasis">
                                                         <div class="d-flex align-items-center gap-1"><img
                                                                 src="{{ $lastPost->user->avatar ? asset('storage/avatars/' . $lastPost->user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($lastPost->user->name) . '&background=0d6efd&color=fff&size=28' }}"
                                                                 alt="{{ $lastPost->user->name }}" class="avatar-sm">
                                                             <span> {{ $lastPost->user->name }} </span></div>
-                                                        <span> <i class="bi bi-clock me-1"></i> {{ $lastPost->created_at->diffForHumans() }} </span>
+                                                        <span>
+                                                            <i class="bi bi-clock me-1"></i> {{ $lastPost->created_at->diffForHumans() }} </span>
                                                     </div>
                                                 @else
                                                     <span class="small text-secondary"> Пока нет сообщений </span>
@@ -140,7 +146,10 @@ new class extends Component {
                     <!-- ======================================== -->
                     <div class="col-lg-4">
                         <div class="d-flex flex-column gap-4"> <!-- ================================= -->
-                            <a class="btn btn-success" href="{{route('topics.create')}}">Создать топик</a>
+                            @if(Auth::check())
+                                <a class="btn btn-success" href="{{route('topics.create')}}">Создать топик</a>
+                            @endif
+
                             <!-- ПОСЛЕДНИЕ ОБСУЖДЕНИЯ --> <!-- ================================= -->
                             <div class="forum-card p-4">
                                 <div class="d-flex align-items-center justify-content-between mb-4"><h6
@@ -154,7 +163,7 @@ new class extends Component {
                                             alt="{{ $topic->user->name }}" class="avatar-md flex-shrink-0">
                                         <div class="flex-grow-1 min-w-0"> <!-- Название --> <a
                                                 href="#"
-                                                class="text-decoration-none fw-medium text-dark"> {{ $topic->title }} </a>
+                                                class="text-decoration-none fw-medium text-dark text-break"> {{ $topic->title }} </a>
                                             <!-- Информация -->
                                             <div
                                                 class="d-flex flex-wrap align-items-center gap-2 small text-secondary-emphasis mt-1">

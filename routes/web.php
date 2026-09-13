@@ -4,10 +4,12 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\LogoutController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', IndexController::class)->name('home');
@@ -28,6 +30,12 @@ Route::get('/logout', [LogoutController::class, "logout"])->name('logout');
 Route::resource('topics', TopicController::class)->except('show');
 
 Route::get('/topics/{topic}/{slug}', [TopicController::class, "show"])->name('topic.show');
+
+Route::get('/messages', [MessageController::class, "index"])->name('messages');
+
+Route::get('/users',[UserController::class, "index"])->name('users.index');
+
+
 
 
 

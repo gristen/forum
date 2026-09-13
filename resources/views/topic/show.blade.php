@@ -11,10 +11,10 @@
                     <a href="#" class="text-decoration-none">Форум</a>
                 </li>
                 <li class="breadcrumb-item">
-                    <a href="#" class="text-decoration-none">Вопросы</a>
+                    <a href="#" class="text-decoration-none">{{$topic->category->name}}</a>
                 </li>
                 <li class="breadcrumb-item active">
-                    Laravel
+                    {{$topic->short_title}}
                 </li>
             </ol>
         </nav>
@@ -40,17 +40,17 @@
 
                         <span>
                             <i class="bi bi-person me-1"></i>
-                            {{$topic->user->name}}
+                            <a class="text-decoration-none text-muted" href="{{ route('profile', $topic->user->name)}}"> {{$topic->user->name }} </a>
                         </span>
 
                             <span>
                             <i class="bi bi-clock me-1"></i>
                            {{ $topic->created_at->diffForHumans() }}
-                        </span>
+                            </span>
 
                             <span>
                             <i class="bi bi-chat-left-text me-1"></i>
-                            12 сообщений \ доделать
+                            {{$topic->posts_count}} сообщений
                         </span>
 
                         </div>
@@ -174,43 +174,7 @@
 
         {{-- Pagination --}}
         <div class="d-flex justify-content-center my-4">
-
-            <nav>
-                <ul class="pagination mb-0">
-
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#">
-                            &laquo;
-                        </a>
-                    </li>
-
-                    <li class="page-item active">
-                        <a class="page-link" href="#">
-                            1
-                        </a>
-                    </li>
-
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            2
-                        </a>
-                    </li>
-
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            3
-                        </a>
-                    </li>
-
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            &raquo;
-                        </a>
-                    </li>
-
-                </ul>
-            </nav>
-
+            {{$posts->links()}}
         </div>
 
 

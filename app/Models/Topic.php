@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 
 class Topic extends Model
 {
@@ -20,6 +21,11 @@ class Topic extends Model
         'pinned',
         'solved',
     ];
+
+    public function getShortTitleAttribute()
+    {
+        return Str::limit($this->title, 50);
+    }
 
     public function category()
     {

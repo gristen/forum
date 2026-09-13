@@ -18,23 +18,19 @@
                     <div class="text-center p-4">
 
                         <div class="mx-auto mb-3 user-profile-avatar">
-                          <p>photo)</p>
+                            <img class="w-50" src="{{ asset('storage/avatars/'. $user->avatar)}}" alt="">
                         </div>
 
                         <h3 class="mb-1">
-                          {{$user->name}}
+                            {{$user->name}}
                         </h3>
 
                         <div class="text-muted mb-3">
                             {{"@$user->name"}}
                         </div>
 
-                        <span class="badge bg-success mb-4">
-                        Онлайн
-                    </span>
-
                         <p class="text-muted mb-4">
-                           {{$user->about}}
+                            {{$user->about}}
                         </p>
 
                         <hr>
@@ -53,10 +49,10 @@
                                 <strong>{{$user->created_at->isoFormat('D MMMM Y')}}</strong>
                             </div>
 
-                           {{-- <div class="d-flex justify-content-between">
-                                <span class="text-muted">Последний визит</span>
-                                <strong>Сегодня</strong>
-                            </div>--}}
+                            {{-- <div class="d-flex justify-content-between">
+                                 <span class="text-muted">Последний визит</span>
+                                 <strong>Сегодня</strong>
+                             </div>--}}
 
                         </div>
 
@@ -82,14 +78,14 @@
 
                             <div class="col-6">
                                 <div class="stat-box">
-                                    <div class="number">18</div>
-                                    <div class="label">Тем</div>
+                                    <div class="number">{{$user->topics_count}}</div>
+                                    <div class="label">Топиков</div>
                                 </div>
                             </div>
 
                             <div class="col-6">
                                 <div class="stat-box">
-                                    <div class="number">352</div>
+                                    <div class="number">{{$user->posts_count}}</div>
                                     <div class="label">Сообщений</div>
                                 </div>
                             </div>
@@ -126,36 +122,21 @@
                     </div>
 
                     <div class="p-3">
+                        @forelse($user->topics as $topic)
+                            <div class="topic-item">
+                                <h6 class="mb-1">
+                                    <a href="{{ route('topic.show',[$topic, $topic->slug]) }}">{{ $topic->short_title }}</a>
+                                </h6>
 
-                        <div class="topic-item">
-                            <h6 class="mb-1">
-                                <a href="#">Как настроить Laravel Sail?</a>
-                            </h6>
+                                <small class="text-muted">
+                                    {{$topic->created_at->diffForHumans()}} • {{$topic->posts_count}} ответов
+                                </small>
+                            </div>
 
-                            <small class="text-muted">
-                                Сегодня • 15 ответов
-                            </small>
-                        </div>
+                        @empty
+                            <p>ничего нет</p>
+                        @endforelse
 
-                        <div class="topic-item">
-                            <h6 class="mb-1">
-                                <a href="#">Помогите с миграциями</a>
-                            </h6>
-
-                            <small class="text-muted">
-                                Вчера • 6 ответов
-                            </small>
-                        </div>
-
-                        <div class="topic-item">
-                            <h6 class="mb-1">
-                                <a href="#">Как работает Gate?</a>
-                            </h6>
-
-                            <small class="text-muted">
-                                3 дня назад • 22 ответа
-                            </small>
-                        </div>
 
                     </div>
 
@@ -168,54 +149,25 @@
                     </div>
 
                     <div class="p-3">
-
+                        @forelse($user->posts as $post)
                         <div class="topic-item">
 
                             <small class="text-primary">
-                                Как настроить Laravel Sail?
+                                <a href="{{ route('topic.show',[$post->topic, $post->topic->slug]) }}">{{$post->topic->short_title}}</a>
                             </small>
 
                             <div class="mt-2">
-                                Попробуй использовать docker-compose и команду sail up...
+                                {{ strip_tags($post->content) }}
                             </div>
 
                             <small class="text-muted">
-                                10 минут назад
+                                {{$post->created_at->diffForHumans()}}
                             </small>
 
                         </div>
-
-                        <div class="topic-item">
-
-                            <small class="text-primary">
-                                Вопрос по PHP
-                            </small>
-
-                            <div class="mt-2">
-                                Лучше использовать dependency injection вместо new...
-                            </div>
-
-                            <small class="text-muted">
-                                Сегодня
-                            </small>
-
-                        </div>
-
-                        <div class="topic-item">
-
-                            <small class="text-primary">
-                                Laravel 12
-                            </small>
-
-                            <div class="mt-2">
-                                Мне помогло выполнить php artisan optimize:clear.
-                            </div>
-
-                            <small class="text-muted">
-                                Вчера
-                            </small>
-
-                        </div>
+                        @empty
+                            <p>пусто</p>
+                        @endforelse
 
                     </div>
 

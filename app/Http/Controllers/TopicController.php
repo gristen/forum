@@ -72,10 +72,16 @@ class TopicController extends Controller
      */
     public function show(Topic $topic)
     {
+        $topic->load('category');
+        $topic->loadCount('posts');
+
         $posts = $topic->posts()
-            ->oldest()
-            ->get();
-        debugbar()->debug($posts->toArray());
+        ->with('user')
+
+        ->oldest('created_at')
+        ->paginate(10);
+
+        debugbar()->info($posts);
         return view('topic.show', compact('topic','posts'));
     }
 
