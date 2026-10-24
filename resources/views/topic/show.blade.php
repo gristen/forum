@@ -21,7 +21,10 @@
                     </li>
 
                     <li class="breadcrumb-item">
-                        <a href="#">
+                        <a href="{{ route('category.show', [
+                            'category' => $topic->category,
+                            'slug' => $topic->category->slug
+                        ]) }}">
                             {{ $topic->category->name }}
                         </a>
                     </li>

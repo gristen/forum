@@ -175,7 +175,13 @@ new class extends Component {
 
                                     </div>
 
-                                    <a href="#" class="section-link">
+                                    <a
+                                        href="{{ route('category.show', [
+                                            'category' => $category,
+                                            'slug' => $category->slug
+                                        ]) }}"
+                                        class="section-link"
+                                    >
                                         Все темы
 
                                         <i class="bi bi-chevron-right"></i>

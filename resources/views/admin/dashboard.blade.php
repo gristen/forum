@@ -1,292 +1,255 @@
 @extends('admin.components.app')
 
 @section('content')
-    <div class="admin-sidebar">
 
-        <div class="logo">
+    <div class="container admin-page ">
 
-            <i class="bi bi-shield-lock-fill me-2"></i>
+        {{-- HEADER --}}
+        <div class="admin-header">
 
-            Forum Admin
-
-        </div>
-
-        <ul>
-
-            <li>
-                <a href="#" class="active">
-                    <i class="bi bi-speedometer2"></i>
-                    Dashboard
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <i class="bi bi-people"></i>
-                    Пользователи
-                </a>
-            </li>
-            <li>
-                <a href="{{route('roles.index')}}">
-                    <i class="bi bi-key"></i>
-                    Доступы
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <i class="bi bi-folder2-open"></i>
-                    Категории
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <i class="bi bi-chat-square-text"></i>
-                    Темы
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <i class="bi bi-chat-left-text"></i>
-                    Сообщения
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <i class="bi bi-flag"></i>
-                    Жалобы
-                </a>
-            </li>
-
-            <li>
-                <a href="#">
-                    <i class="bi bi-gear"></i>
-                    Настройки
-                </a>
-            </li>
-
-        </ul>
-
-    </div>
-
-    <div class="admin-content">
-
-        <div class="admin-navbar">
-
-            <h4 class="m-0">
-                Dashboard
-            </h4>
-
-            <div class="d-flex align-items-center gap-3">
-
-                <button class="btn btn-light">
-
-                    <i class="bi bi-bell"></i>
-
-                </button>
-
-                <div class="admin-avatar">
-                    D
+            <div>
+                <div class="admin-breadcrumb">
+                    <span>Админ-панель</span>
+                    <i class="bi bi-chevron-right"></i>
+                    <span>Dashboard</span>
                 </div>
 
+                <h1 class="admin-title">
+                    Панель управления
+                </h1>
+
+                <p class="admin-subtitle">
+                    Управление форумом и просмотр состояния системы
+                </p>
             </div>
 
         </div>
 
-        {{-- Статистика --}}
 
-        <div class="row g-4 mb-4">
+        {{-- STATS --}}
+        <div class="admin-stats">
 
-            <div class="col-md-3">
+            @foreach($dashboardData['stats'] as $stat)
 
-                <div class="stat-card">
+                <div class="admin-stat-card">
 
-                    <div>
+                    <div class="admin-stat-top">
 
-                        <div class="label">
-                            Пользователи
+                        <div class="admin-stat-icon {{ $stat['color'] }}">
+                            <i class="bi {{ $stat['icon'] }}"></i>
                         </div>
 
-                        <div class="number">
-                            154
-                        </div>
+                        @if(isset($stat['growth']))
+                            <span class="admin-stat-growth {{ $stat['growth']['percent'] >= 0 ? 'positive' : 'negative' }}">
 
-                    </div>
+                            <i class="bi {{ $stat['growth']['percent'] >= 0 ? 'bi-arrow-up' : 'bi-arrow-down' }}"></i>
 
-                    <div class="icon">
-                        <i class="bi bi-people"></i>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-3">
-
-                <div class="stat-card">
-
-                    <div>
-
-                        <div class="label">
-                            Темы
-                        </div>
-
-                        <div class="number">
-                            532
-                        </div>
-
-                    </div>
-
-                    <div class="icon">
-                        <i class="bi bi-chat-square-text"></i>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-3">
-
-                <div class="stat-card">
-
-                    <div>
-
-                        <div class="label">
-                            Сообщения
-                        </div>
-
-                        <div class="number">
-                            4812
-                        </div>
-
-                    </div>
-
-                    <div class="icon">
-                        <i class="bi bi-chat-left-text"></i>
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-3">
-
-                <div class="stat-card">
-
-                    <div>
-
-                        <div class="label">
-                            Жалобы
-                        </div>
-
-                        <div class="number text-danger">
-                            8
-                        </div>
-
-                    </div>
-
-                    <div class="icon">
-                        <i class="bi bi-flag"></i>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        {{-- Таблица --}}
-
-        <div class="admin-card">
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-
-                <h5 class="mb-0">
-
-                    Последние пользователи
-
-                </h5>
-
-                <button class="btn btn-primary">
-
-                    Добавить
-
-                </button>
-
-            </div>
-
-            <table class="table">
-
-                <thead>
-
-                <tr>
-
-                    <th>ID</th>
-
-                    <th>Имя</th>
-
-                    <th>Email</th>
-
-                    <th>Роль</th>
-
-                    <th>Дата</th>
-
-                    <th></th>
-
-                </tr>
-
-                </thead>
-
-                <tbody>
-
-                <tr>
-
-                    <td>1</td>
-
-                    <td>Admin</td>
-
-                    <td>admin@mail.ru</td>
-
-                    <td>
-
-                    <span class="badge bg-primary">
-
-                        Администратор
+                            {{ abs($stat['growth']['percent']) }}%
 
                     </span>
+                        @endif
 
-                    </td>
+                    </div>
 
-                    <td>
+                    <div class="admin-stat-label">
+                        {{ $stat['label'] }}
+                    </div>
 
-                        Сегодня
+                    <div class="admin-stat-value">
+                        {{ number_format($stat['total'], 0, ',', ' ') }}
+                    </div>
 
-                    </td>
+                    <div class="admin-stat-footer">
 
-                    <td class="text-end">
+                        @if(isset($stat['growth']))
+                            {{ $stat['growth']['current'] }} за {{ $stat['growth']['field'] }}
+                        @else
+                            {{ $stat['footer'] }}
+                        @endif
 
-                        <button class="btn btn-sm btn-outline-primary">
+                    </div>
 
-                            <i class="bi bi-pencil"></i>
+                </div>
 
-                        </button>
+            @endforeach
 
-                        <button class="btn btn-sm btn-outline-danger">
+        </div>
 
-                            <i class="bi bi-trash"></i>
 
-                        </button>
+        {{-- MAIN GRID --}}
+        <div class="admin-grid">
 
-                    </td>
+            {{-- LEFT --}}
+            <main class="admin-main">
 
-                </tr>
+                {{-- QUICK ACTIONS --}}
+                <section class="admin-panel">
 
-                </tbody>
+                    <div class="admin-panel-header">
 
-            </table>
+                        <div>
+                            <h2>
+                                <i class="bi bi-lightning-charge-fill"></i>
+                                Быстрые действия
+                            </h2>
+
+                            <p>
+                                Часто используемые разделы
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="admin-actions-grid">
+
+                        <a href="#" class="admin-action-card">
+
+                            <div class="admin-action-icon purple">
+                                <i class="bi bi-folder-plus"></i>
+                            </div>
+
+                            <div>
+                                <strong>Создать категорию</strong>
+                                <span>Добавить новый раздел форума</span>
+                            </div>
+
+                            <i class="bi bi-chevron-right admin-action-arrow"></i>
+
+                        </a>
+
+
+                        <a href="#" class="admin-action-card">
+
+                            <div class="admin-action-icon green">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+
+                            <div>
+                                <strong>Пользователи</strong>
+                                <span>Управление пользователями</span>
+                            </div>
+
+                            <i class="bi bi-chevron-right admin-action-arrow"></i>
+
+                        </a>
+
+
+                        <a href="#" class="admin-action-card">
+
+                            <div class="admin-action-icon yellow">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+
+                            <div>
+                                <strong>Роли и права</strong>
+                                <span>Настройка доступа</span>
+                            </div>
+
+                            <i class="bi bi-chevron-right admin-action-arrow"></i>
+
+                        </a>
+
+
+                        <a href="#" class="admin-action-card">
+
+                            <div class="admin-action-icon red">
+                                <i class="bi bi-flag-fill"></i>
+                            </div>
+
+                            <div>
+                                <strong>Жалобы</strong>
+                                <span>Проверить обращения</span>
+                            </div>
+
+                            <i class="bi bi-chevron-right admin-action-arrow"></i>
+
+                        </a>
+
+                    </div>
+
+                </section>
+
+
+                {{-- RECENT TOPICS --}}
+                <section class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                        <div>
+                            <h2>
+                                <i class="bi bi-chat-square-text-fill"></i>
+                                Последние темы
+                            </h2>
+
+                            <p>
+                                Недавно созданные темы
+                            </p>
+                        </div>
+
+                        <a href="#" class="admin-panel-link">
+                            Все темы
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </div>
+
+
+                    <div class="admin-table">
+
+                        @forelse($latestTopics ?? [] as $topic)
+
+                            <div class="admin-table-row">
+
+                                <div class="admin-table-icon purple">
+                                    <i class="bi bi-chat-fill"></i>
+                                </div>
+
+                                <div class="admin-table-main">
+
+                                    <a href="#">
+                                        {{ $topic->title }}
+                                    </a>
+
+                                    <span>
+                                        {{ $topic->user->name ?? 'Неизвестный пользователь' }}
+                                    </span>
+
+                                </div>
+
+                                <div class="admin-table-meta">
+
+                                    <span>
+                                        {{ $topic->posts_count ?? 0 }}
+                                        <i class="bi bi-chat"></i>
+                                    </span>
+
+                                    <small>
+                                        {{ $topic->created_at?->diffForHumans() }}
+                                    </small>
+
+                                </div>
+
+                            </div>
+
+                        @empty
+
+                            <div class="admin-empty">
+                                <i class="bi bi-inbox"></i>
+                                <span>Тем пока нет</span>
+                            </div>
+
+                        @endforelse
+
+                    </div>
+
+                </section>
+
+            </main>
+
+
+            {{-- SIDEBAR --}}
+
 
         </div>
 

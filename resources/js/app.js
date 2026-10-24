@@ -1,14 +1,17 @@
-//
+import { Toast } from 'bootstrap';
 
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allow your team to quickly build robust real-time web applications.
- */
-
+import 'quill/dist/quill.snow.css';
+import './tinemce.js';
 import './echo';
 
-import 'quill/dist/quill.snow.css'
+document.addEventListener('DOMContentLoaded', () => {
+    const toastElement = document.getElementById('successToast');
 
-import './tinemce.js'
+    if (toastElement) {
+        const toast = new Toast(toastElement, {
+            delay: 3000
+        });
 
+        toast.show();
+    }
+});

@@ -4,8 +4,8 @@ import 'tinymce/icons/default';
 import 'tinymce/themes/silver';
 import 'tinymce/models/dom';
 
-import 'tinymce/skins/ui/oxide/skin';
-import 'tinymce/skins/ui/oxide/content';
+import 'tinymce/skins/ui/oxide-dark/skin';
+import 'tinymce/skins/ui/oxide-dark/content';
 import 'tinymce/skins/content/default/content';
 
 import 'tinymce/plugins/image';
@@ -19,6 +19,9 @@ tinymce.init({
     // Добавляем лицензию GPL
     license_key: 'gpl',
     height: 500,
+
+    /* тёмное оформление редактора — под тему форума */
+    skin: 'oxide-dark',
 
     plugins: 'image link lists code',
 
@@ -42,13 +45,44 @@ tinymce.init({
             body {
                 font-family: Arial, sans-serif;
                 font-size: 16px;
+
+                margin: 14px 16px;
+
+                background-color: #101218;
+                color: #e7e9ee;
+            }
+
+            a {
+                color: #a277ff;
+            }
+
+            blockquote {
+                margin: 0 0 0 6px;
+                padding-left: 14px;
+
+                border-left: 3px solid #8b5cf6;
+
+                color: #b8bdc8;
+            }
+
+            code {
+                padding: 2px 5px;
+
+                background-color: #222731;
+                border-radius: 4px;
+            }
+
+            ::selection {
+                background: rgba(139, 92, 246, .35);
+                color: #fff;
             }
         `
 });
 
 const form = document.querySelector('#topic-form');
 const content = document.querySelector('#content');
-
-form.addEventListener('submit', function () {
-    content.value = tinymce.get('editor').getContent();
-});
+if (form) {
+    form.addEventListener('submit', function () {
+        content.value = tinymce.get('editor').getContent();
+    });
+}

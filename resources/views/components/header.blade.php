@@ -35,16 +35,27 @@
             <div class="forum-search">
 
                 <div class="forum-search-box">
-
-                    <input
-                        type="text"
-                        class="forum-search-input"
-                        placeholder="Поиск по темам, авторам, тегам..."
-                    >
+                    <livewire:search
+                        :models="[
+                            [
+                                'model' => \App\Models\Category::class,
+                                'search-columns' => ['name', 'description'],
+                                'type' => 'category',
+                                'display-field'=> ['name', 'description']
+                            ],
+                            [
+                                'model' => \App\Models\Topic::class,
+                                'search-columns' => ['title'],
+                                'type' => 'topic',
+                                'display-field'=> ['title']
+                            ],
+                        ]"
+                    />
 
                     <i class="bi bi-search forum-search-icon"></i>
 
                 </div>
+
 
             </div>
 
@@ -61,8 +72,7 @@
                          УВЕДОМЛЕНИЯ
                     ================================================== --}}
 
-                    <a
-                        href="#"
+                    <button
                         class="forum-header-action"
                         title="Уведомления"
                     >
@@ -73,7 +83,7 @@
                             3
                         </span>
 
-                    </a>
+                    </button>
 
 
                     {{-- =================================================
@@ -154,13 +164,13 @@
 
                                 <a
                                     class="dropdown-item"
-                                    href="#"
+                                    href="{{route('admin.index')}}"
                                 >
 
                                     <i class="bi bi-gear"></i>
 
                                     <span>
-                                        Настройки
+                                        админ панель
                                     </span>
 
                                 </a>

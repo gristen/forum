@@ -8,7 +8,7 @@ trait HasSearch
 {
     public function scopeSearch(Builder $query, $search, $columns)
     {
-       return  $query->where(function ($query) use ($search, $columns) {
+       return $query->where(function ($query) use ($search, $columns) {
            foreach ($columns as $column) {
                $query->orWhere($column, 'LIKE', "%{$search}%");
            }

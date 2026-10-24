@@ -1,251 +1,164 @@
 @extends("admin.components.app")
 
 @section("content")
-    <div class="container-fluid">
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="container admin-page">
+
+        {{-- HEADER --}}
+        <div class="admin-header">
 
             <div>
-                <h2 class="mb-1">Роли</h2>
-                <p class="text-muted mb-0">
-                    Управление ролями пользователей
+                <div class="admin-breadcrumb">
+                    <span>Админ-панель</span>
+                    <i class="bi bi-chevron-right"></i>
+                    <span>Пользователи</span>
+                    <i class="bi bi-chevron-right"></i>
+                    <span>Роли</span>
+                </div>
+
+                <h1 class="admin-title">
+                    Роли
+                </h1>
+
+                <p class="admin-subtitle">
+                    Управление ролями и правами доступа пользователей
                 </p>
             </div>
 
-            <button class="btn btn-primary">
-                <i class="bi bi-plus-lg me-2"></i>
-                Добавить роль
-            </button>
+            <a href="{{ route('admin.roles.create') }}" class="admin-primary-btn">
+                <i class="bi bi-plus-lg"></i>
+                Создать роль
+            </a>
 
         </div>
 
-        <div class="row g-4">
 
-            {{-- Администратор --}}
-            @foreach($roles as $role)
-                <div class="col-xl-4 col-md-6">
+        {{-- ROLES --}}
+        <section class="admin-panel">
 
-                    <div class="admin-card role-card">
+            <div class="admin-panel-header">
 
-                        <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h2>
+                        <i class="bi bi-person-badge-fill"></i>
+                        Список ролей
+                    </h2>
 
-                            <div>
+                    <p>
+                        Роли пользователей форума
+                    </p>
+                </div>
 
-                        <span class="badge bg-danger mb-3">
-                            <i class="bi bi-shield-fill me-1"></i>
-                            {{$role->name}}
-                        </span>
+                <span class="admin-panel-count">
+                    {{ $roles->count() }}
+                </span>
 
-                                <h5 class="mb-1">
-                                    id {{$role->id}}
-                                </h5>
+            </div>
 
-                                <p class="text-muted mb-0">
-                                    Полный доступ ко всем разделам форума.
-                                </p>
 
+            <div class="admin-roles-list">
+
+                @forelse($roles as $role)
+
+                    <div class="admin-role-row">
+
+                        {{-- ICON --}}
+                        <div class="admin-role-icon {{ $role->badge_class }}">
+                            <i class="bi {{ $role->icon_class }}"></i>
+                        </div>
+
+
+                        {{-- INFO --}}
+                        <div class="admin-role-info">
+
+                            <div class="admin-role-name">
+                                {{ $role->display_name }}
                             </div>
 
-                            <div class="dropdown">
-
-                                <button class="btn btn-light btn-sm"
-                                        data-bs-toggle="dropdown">
-
-                                    <i class="bi bi-three-dots"></i>
-
-                                </button>
-
-                                <ul class="dropdown-menu dropdown-menu-end">
-
-                                    <li>
-                                        <a class="dropdown-item" href="{{route('roles.edit',$role)}}">
-                                            <i class="bi bi-pencil me-2"></i>
-                                            Редактировать
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a class="dropdown-item text-danger" href="#">
-                                            <i class="bi bi-trash me-2"></i>
-                                            Удалить
-                                        </a>
-                                    </li>
-
-                                </ul>
-
+                            <div class="admin-role-slug">
+                                {{ $role->name }}
                             </div>
 
                         </div>
 
-                        <hr>
 
-                        <div class="row text-center">
+                        {{-- USERS --}}
+                        <div class="admin-role-stat">
 
-                            <div class="col-6">
+                            <span class="admin-role-stat-label">
+                                Пользователи
+                            </span>
 
-                                <div class="small text-muted">
-                                    Пользователей
-                                </div>
+                            <strong>
+                                {{ $role->users_count ?? $role->users->count() }}
+                            </strong>
 
-                                <div class="fw-bold fs-4">
-                                    2
-                                </div>
+                        </div>
 
-                            </div>
+                        {{-- PERMISSIONS --}}
+                        <div class="admin-role-stat">
 
-                            <div class="col-6">
+                            <span class="admin-role-stat-label">
+                                Права
+                            </span>
 
-                                <div class="small text-muted">
-                                    Разрешений
-                                </div>
+                            <strong>
+                                {{ $role->permissions_count ?? $role->permissions->count() }}
+                            </strong>
 
-                                <div class="fw-bold fs-4">
-                                    18
-                                </div>
+                        </div>
 
-                            </div>
+
+                        {{-- ACTIONS --}}
+                        <div class="admin-role-actions">
+
+                            <a
+                                href="{{ route('admin.roles.edit', $role) }}"
+                                class="admin-role-action"
+                                title="Редактировать"
+                            >
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            <form
+                                action="{{ route('admin.roles.destroy', $role) }}"
+                                method="POST"
+                                onsubmit="return confirm('Удалить эту роль?')"
+                            >
+                                @csrf
+                                @method('DELETE')
+
+                                <button
+                                    type="submit"
+                                    class="admin-role-action danger"
+                                    title="Удалить"
+                                >
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </form>
 
                         </div>
 
                     </div>
 
-                </div>
-            @endforeach
+                @empty
 
+                    <div class="admin-empty">
 
-            {{-- Модератор --}}
-            {{--  <div class="col-xl-4 col-md-6">
+                        <i class="bi bi-person-badge"></i>
 
-                  <div class="admin-card role-card">
+                        <span>
+                            Ролей пока нет
+                        </span>
 
-                      <div class="d-flex justify-content-between">
+                    </div>
 
-                          <div>
+                @endforelse
 
-                          <span class="badge bg-success mb-3">
-                              <i class="bi bi-person-check-fill me-1"></i>
-                              Модератор
-                          </span>
+            </div>
 
-                              <h5 class="mb-1">
-                                  moderator
-                              </h5>
-
-                              <p class="text-muted mb-0">
-                                  Может модерировать форум и жалобы.
-                              </p>
-
-                          </div>
-
-                          <a href="{{route('roles.edit',[])}}" class="btn btn-light btn-sm">
-
-                             редактировать
-
-                          </a>
-
-                      </div>
-
-                      <hr>
-
-                      <div class="row text-center">
-
-                          <div class="col-6">
-
-                              <div class="small text-muted">
-                                  Пользователей
-                              </div>
-
-                              <div class="fw-bold fs-4">
-                                  6
-                              </div>
-
-                          </div>
-
-                          <div class="col-6">
-
-                              <div class="small text-muted">
-                                  Разрешений
-                              </div>
-
-                              <div class="fw-bold fs-4">
-                                  12
-                              </div>
-
-                          </div>
-
-                      </div>
-
-                  </div>
-
-              </div>--}}
-
-            {{-- Пользователь --}}
-            {{-- <div class="col-xl-4 col-md-6">
-
-                 <div class="admin-card role-card">
-
-                     <div class="d-flex justify-content-between">
-
-                         <div>
-
-                         <span class="badge bg-primary mb-3">
-                             <i class="bi bi-person-fill me-1"></i>
-                             Пользователь
-                         </span>
-
-                             <h5 class="mb-1">
-                                 user
-                             </h5>
-
-                             <p class="text-muted mb-0">
-                                 Стандартная роль форума.
-                             </p>
-
-                         </div>
-
-                         <button class="btn btn-light btn-sm">
-
-                             <i class="bi bi-three-dots"></i>
-
-                         </button>
-
-                     </div>
-
-                     <hr>
-
-                     <div class="row text-center">
-
-                         <div class="col-6">
-
-                             <div class="small text-muted">
-                                 Пользователей
-                             </div>
-
-                             <div class="fw-bold fs-4">
-                                 243
-                             </div>
-
-                         </div>
-
-                         <div class="col-6">
-
-                             <div class="small text-muted">
-                                 Разрешений
-                             </div>
-
-                             <div class="fw-bold fs-4">
-                                 3
-                             </div>
-
-                         </div>
-
-                     </div>
-
-                 </div>
-
-             </div>--}}
-
-        </div>
+        </section>
 
     </div>
+
 @endsection

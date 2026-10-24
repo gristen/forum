@@ -2,128 +2,164 @@
 
 @section('content')
 
-    <div class="container py-4">
+    <div class="forum-page">
 
-        <div class="row justify-content-center">
+        <div class="container py-4">
 
-            <div class="col-lg-8">
+            {{-- =====================================================
+                 BREADCRUMBS
+            ====================================================== --}}
 
-                <div class="forum-card">
+            <nav class="forum-breadcrumb mb-3">
 
-                    {{-- Заголовок --}}
-                    <div class="category-header d-flex align-items-center gap-2">
-                        <i class="bi bi-plus-circle text-primary"></i>
+                <ol class="breadcrumb mb-0">
 
-                        <div>
-                            <h5 class="mb-0">Создание новой темы</h5>
-                            <small class="text-secondary-emphasis">
-                                Создайте тему для обсуждения
-                            </small>
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('home') }}">
+                            Форум
+                        </a>
+                    </li>
+
+                    <li class="breadcrumb-item active">
+                        Новая тема
+                    </li>
+
+                </ol>
+
+            </nav>
+
+
+            <div class="row justify-content-center">
+
+                <div class="col-lg-8">
+
+                    <div class="forum-topic-card">
+
+                        {{-- Заголовок --}}
+                        <div class="forum-create-header">
+
+                            <span class="forum-create-header-icon">
+                                <i class="bi bi-plus-circle"></i>
+                            </span>
+
+                            <div>
+                                <h5 class="forum-create-header-title">
+                                    Создание новой темы
+                                </h5>
+
+                                <div class="forum-create-header-subtitle">
+                                    Создайте тему для обсуждения
+                                </div>
+                            </div>
+
                         </div>
-                    </div>
 
-                    {{-- Форма --}}
-                    <div class="p-4">
+                        {{-- Форма --}}
+                        <div class="forum-create-body">
 
-                        <form method="POST"  id="topic-form" action="{{route('topics.store')}}">
-                        @csrf
-                            {{-- Категория --}}
-                            <div class="mb-4">
+                            <form method="POST" id="topic-form" action="{{ route('topics.store') }}">
+                                @csrf
 
-                                <label for="category" class="form-label fw-medium">
-                                    Категория
-                                </label>
+                                {{-- Категория --}}
+                                <div class="forum-create-field">
 
-                                <select
-                                    id="category"
-                                    name="category_id"
-                                    class="form-select"
-                                >
+                                    <label for="category" class="forum-create-label">
+                                        Категория
+                                    </label>
 
-                                    <option selected disabled>
-                                        Выберите категорию
-                                    </option>
-                                    @forelse($categories as $category)
-                                    <option value="{{$category->id}}">
-                                       {{$category->name}}
-                                    </option>
-                                    @empty
-                                        <p>Пока нет категорий</p>
-                                    @endforelse
+                                    <select
+                                        id="category"
+                                        name="category_id"
+                                        class="form-select"
+                                    >
 
-                                </select>
+                                        <option selected disabled>
+                                            Выберите категорию
+                                        </option>
 
-                                <div class="form-text">
-                                    Выберите раздел, в котором будет создана тема.
+                                        @forelse($categories as $category)
+                                            <option value="{{ $category->id }}">
+                                                {{ $category->name }}
+                                            </option>
+                                        @empty
+                                            <option disabled>
+                                                Пока нет категорий
+                                            </option>
+                                        @endforelse
+
+                                    </select>
+
+                                    <div class="forum-create-hint">
+                                        Выберите раздел, в котором будет создана тема.
+                                    </div>
+
                                 </div>
 
-                            </div>
 
+                                {{-- Название темы --}}
+                                <div class="forum-create-field">
 
-                            {{-- Название темы --}}
-                            <div class="mb-4">
+                                    <label for="title" class="forum-create-label">
+                                        Название темы
+                                    </label>
 
-                                <label for="title" class="form-label fw-medium">
-                                    Название темы
-                                </label>
+                                    <input
+                                        type="text"
+                                        id="title"
+                                        name="title"
+                                        class="form-control"
+                                        placeholder="Например: Как работает Eloquent?"
+                                        maxlength="255"
+                                    >
 
-                                <input
-                                    type="text"
-                                    id="title"
-                                    name="title"
-                                    class="form-control"
-                                    placeholder="Например: Как работает Eloquent?"
-                                    maxlength="255"
-                                >
+                                    <div class="forum-create-hint">
+                                        Постарайтесь кратко описать суть вопроса.
+                                    </div>
 
-                                <div class="form-text">
-                                    Постарайтесь кратко описать суть вопроса.
                                 </div>
 
-                            </div>
 
+                                {{-- Сообщение --}}
+                                <div class="forum-create-field">
 
-                            {{-- Сообщение --}}
-                            <div class="mb-4">
+                                    <label for="editor" class="forum-create-label">
+                                        Сообщение
+                                    </label>
 
-                                <label for="content" class="form-label fw-medium">
-                                    Сообщение
-                                </label>
-                                {{--INFO: 123--}}
-                               {{-- <div id="editor"></div>--}}
-                                <textarea name="content" id="editor"></textarea>
+                                    <textarea name="content" id="editor"></textarea>
 
+                                    <input type="hidden" name="content" id="content">
 
-                                <input type="hidden" name="content" id="content">
+                                    <div class="forum-create-hint">
+                                        Здесь можно подробно описать вопрос или начать обсуждение.
+                                    </div>
 
-                                <div class="form-text">
-                                    Здесь можно подробно описать вопрос или начать обсуждение.
                                 </div>
 
-                            </div>
+                                {{-- Кнопки --}}
+                                <div class="forum-create-actions">
 
-                            {{-- Кнопки --}}
-                            <div class="d-flex justify-content-between align-items-center">
+                                    <a
+                                        href="#"
+                                        class="forum-btn-ghost"
+                                    >
+                                        <i class="bi bi-arrow-left"></i>
+                                        Отмена
+                                    </a>
 
-                                <a
-                                    href="#"
-                                    class="btn btn-light border"
-                                >
-                                    <i class="bi bi-arrow-left me-1"></i>
-                                    Отмена
-                                </a>
+                                    <button
+                                        type="submit"
+                                        class="forum-btn-accent"
+                                    >
+                                        <i class="bi bi-plus-lg"></i>
+                                        Создать тему
+                                    </button>
 
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary px-4"
-                                >
-                                    <i class="bi bi-plus-lg me-1"></i>
-                                    Создать тему
-                                </button>
+                                </div>
 
-                            </div>
+                            </form>
 
-                        </form>
+                        </div>
 
                     </div>
 
@@ -134,6 +170,5 @@
         </div>
 
     </div>
-
 
 @endsection

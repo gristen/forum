@@ -1,24 +1,61 @@
 <!doctype html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+          content="width=device-width, user-scalable=no, initial-scale=1.0,
+                   maximum-scale=1.0, minimum-scale=1.0">
+
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>admin panel</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-{{--    <!-- Chart.js -->--}}
-{{--    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>--}}
-{{--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>--}}
-    <!-- СТИЛИ ТОЛЬКО ДЛЯ АДМИНКИ -->
-    <link rel="stylesheet" href="{{ asset('assets/css/admin/app.css') }}">
+
+    <title>
+        @yield('title', 'Админ-панель')
+    </title>
+
+    @vite([
+        'resources/css/admin.css',
+        'resources/js/app.js'
+    ])
 </head>
+
 <body>
-@yield('content')
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+<div class="admin-layout">
+    @if (session('success'))
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div
+                id="successToast"
+                class="toast text-bg-success border-0"
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+            >
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        {{ session('success') }}
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast"
+                        aria-label="Закрыть"
+                    ></button>
+                </div>
+            </div>
+        </div>
+    @endif
+    {{-- SIDEBAR --}}
+    @include('admin.components.sidebar')
+    {{-- ОСНОВНОЙ КОНТЕНТ --}}
+    <main class="admin-content">
+        @yield('content')
+    </main>
+
+</div>
+
 </body>
 </html>

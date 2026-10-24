@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasSearch;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
 class Topic extends Model
 {
+    use HasSearch;
     protected $fillable = [
         'title',
         'slug',
