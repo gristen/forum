@@ -35,6 +35,7 @@ class DashboardService
             'totalTopics' => $totals['topics'],
             'totalMessages' => $totals['messages'],
             'totalCategories' => $totals['categories'],
+            'latestTopics'=> Topic::latest()->take(5)->get(),
 
             'stats' => [
                 'users' => [

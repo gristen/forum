@@ -8,6 +8,12 @@ return [
             'title' => 'Дашборд',
         ],
         [
+            'route' => 'admin.users.index',
+            'active' => 'admin.users.*',
+            'icon' => 'bi-people-fill',
+            'title' => 'Пользователи',
+        ],
+        [
             'route' => 'admin.roles.index',
             'active' => 'admin.roles.*',
             'icon' => 'bi-person-badge-fill',

@@ -18,11 +18,10 @@
 
             <div>
 
-                <div class="admin-breadcrumb">
-                    <span>Админ-панель</span>
-                    <i class="bi bi-chevron-right"></i>
-                    <span>Категории</span>
-                </div>
+                <x-admin.breadcrumb :items="[
+                    ['label' => 'Админ-панель'],
+                    ['label' => 'Категории'],
+                ]" />
 
                 <h1 class="admin-title">
                     Категории

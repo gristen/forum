@@ -6,27 +6,10 @@
 
         <div class="container py-4">
 
-            {{-- =====================================================
-                 BREADCRUMBS
-            ====================================================== --}}
-
-            <nav class="forum-breadcrumb mb-3">
-
-                <ol class="breadcrumb mb-0">
-
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('home') }}">
-                            Форум
-                        </a>
-                    </li>
-
-                    <li class="breadcrumb-item active">
-                        Новая тема
-                    </li>
-
-                </ol>
-
-            </nav>
+            <x-breadcrumb :items="[
+                ['label' => 'Форум', 'url' => route('home')],
+                ['label' => 'Новая тема'],
+            ]" />
 
 
             <div class="row justify-content-center">

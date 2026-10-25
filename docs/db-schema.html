@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Схема БД — forum</title>
+<style>
+  :root{
+    --bg:#0a1120;
+    --panel:#0f1a2e;
+    --panel-2:#121f38;
+    --line:#22304a;
+    --text:#dbe4f5;
+    --muted:#7b8aa8;
+    --pk:#fbbf24;
+    --fk:#60a5fa;
+    --pivot:#c084fc;
+    --extra:#2dd4bf;
+    --morph:#fb923c;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, #14233f 0%, transparent 60%),
+      radial-gradient(900px 500px at 90% 0%, #1a1430 0%, transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    min-height:100vh;
+  }
+  header{
+    padding:28px 32px 8px;
+    max-width:1720px;
+    margin:0 auto;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:18px;
+  }
+  h1{
+    margin:0 0 4px;
+    font-size:22px;
+    letter-spacing:.2px;
+  }
+  h1 span{color:var(--fk)}
+  .sub{color:var(--muted);font-size:13px}
+  .legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 18px;
+    align-items:center;
+    padding:10px 14px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:rgba(15,26,46,.6);
+    font-size:12px;
+    color:#b9c6df;
+  }
+  .legend i{
+    display:inline-block;
+    width:26px;
+    height:0;
+    border-top:2px solid var(--fk);
+    margin-right:7px;
+    vertical-align:middle;
+  }
+  .legend i.pivot{border-color:var(--pivot)}
+  .legend i.extra{border-color:var(--extra);border-top-style:dashed}
+  .legend i.morph{border-color:var(--morph);border-top-style:dashed}
+  .hint{
+    max-width:1720px;
+    margin:0 auto;
+    padding:6px 32px 0;
+    color:var(--muted);
+    font-size:12.5px;
+  }
+  .hint b{color:#b9c6df;font-weight:600}
+  .board{
+    max-width:1720px;
+    margin:18px auto 0;
+    padding:0 32px 32px;
+    overflow-x:auto;
+  }
+  #canvas{
+    position:relative;
+    width:1660px;
+    min-height:400px;
+  }
+  svg#edges{
+    position:absolute;
+    inset:0;
+    overflow:visible;
+    pointer-events:none;
+    z-index:0;
+  }
+  .edge{
+    fill:none;
+    stroke:var(--fk);
+    stroke-width:1.5;
+    opacity:.5;
+    transition:opacity .15s ease, stroke-width .15s ease;
+  }
+  .edge.pivot{stroke:var(--pivot)}
+  .edge.extra{stroke:var(--extra);stroke-dasharray:6 4;opacity:.42}
+  .edge.morph{stroke:var(--morph);stroke-dasharray:3 4;opacity:.5}
+  .edge.active{opacity:1;stroke-width:2.4}
+  .edge.dim{opacity:.05}
+
+  .card{
+    position:absolute;
+    width:340px;
+    background:linear-gradient(180deg,#101c33 0%,#0d1728 100%);
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+    z-index:1;
+    cursor:pointer;
+    transition:opacity .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+  .card:hover{border-color:#3b5480}
+  .card.dim{opacity:.22}
+  .card.pinned{
+    border-color:var(--fk);
+    box-shadow:0 0 0 1px rgba(96,165,250,.35),0 12px 34px rgba(0,0,0,.45);
+  }
+  .card-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:9px 12px;
+    background:linear-gradient(180deg,#1a2b49,#131f36);
+    border-bottom:1px solid var(--line);
+    border-radius:11px 11px 0 0;
+    font-weight:650;
+    font-size:13px;
+    letter-spacing:.3px;
+  }
+  .card-head .tcount{
+    font:10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+    color:var(--muted);
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.06);
+    padding:3px 6px;
+    border-radius:20px;
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    height:24px;
+    padding:0 12px;
+    font:11.5px/24px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    color:#c6d2e8;
+    border-bottom:1px solid rgba(34,48,74,.35);
+  }
+  .row:last-child{border-bottom:0;border-radius:0 0 12px 12px}
+  .row:hover{background:rgba(96,165,250,.07)}
+  .bslot{
+    flex:0 0 34px;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.4px;
+    color:transparent;
+  }
+  .b{
+    display:inline-block;
+    padding:1px 4px;
+    border-radius:4px;
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.4px;
+    line-height:13px;
+  }
+  .b.pk{color:#1a1200;background:var(--pk)}
+  .b.fk{color:#04122b;background:var(--fk)}
+  .b.uq{color:#1b0b2e;background:var(--pivot)}
+  .b.mp{color:#2a1300;background:var(--morph)}
+  .cname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row.fk-row .cname{color:#e2ecff}
+  .row.morph-row .cname{color:#ffd9b8}
+  .ctype{
+    margin-left:auto;
+    color:#5f7091;
+    font-size:10.5px;
+    white-space:nowrap;
+  }
+  .nullmark{
+    color:#4b5a77;
+    font-size:9.5px;
+    border:1px solid #263650;
+    border-radius:3px;
+    padding:0 3px;
+    margin-left:2px;
+  }
+  .muted .cname{color:#65748f}
+  footer{
+    max-width:1720px;
+    margin:0 auto;
+    padding:0 32px 48px;
+    color:var(--muted);
+    font-size:12.5px;
+  }
+  footer .warn{
+    margin-top:12px;
+    padding:10px 14px;
+    border:1px solid rgba(251,146,60,.35);
+    background:rgba(251,146,60,.07);
+    border-radius:10px;
+    color:#f6c99b;
+    max-width:980px;
+  }
+  footer code{
+    font:11.5px ui-monospace,monospace;
+    background:rgba(255,255,255,.06);
+    padding:1px 5px;
+    border-radius:4px;
+    color:#e7eefc;
+  }
+  @media (max-width:900px){
+    header,.hint,.board,footer{padding-left:16px;padding-right:16px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Схема БД — <span>forum</span></h1>
+    <div class="sub" id="stats">построено по database/migrations</div>
+  </div>
+  <div class="legend">
+    <span><i></i>1:N — belongsTo / hasMany</span>
+    <span><i class="pivot"></i>N:M — belongsToMany</span>
+    <span><i class="extra"></i>доп. ключ</span>
+    <span><i class="morph"></i>morph</span>
+  </div>
+</header>
+
+<div class="hint">
+  <b>Наведи</b> на таблицу — подсветятся только её связи. <b>Клик</b> — закрепить, клик по фону или Esc — сбросить.
+</div>
+
+<div class="board">
+  <div id="canvas">
+    <svg id="edges" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ar-fk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#60a5fa"/>
+        </marker>
+        <marker id="ar-pivot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#c084fc"/>
+        </marker>
+        <marker id="ar-extra" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#2dd4bf"/>
+        </marker>
+        <marker id="ar-morph" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#fb923c"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+</div>
+
+<footer>
+  Схема собрана автоматически по файлам <code>database/migrations/*</code>. Служебные таблицы
+  (<code>sessions</code>, <code>password_reset_tokens</code>, <code>cache</code>, <code>jobs</code>) не показаны.
+  <div class="warn">
+    ⚠ В миграции <code>create_conversation_user_table</code> ключ объявлен как
+    <code>-&gt;constrained('conversation')</code>, но таблицы <code>conversation</code> нет — есть
+    <code>conversations</code>. На чистой БД эта миграция упадёт.
+  </div>
+</footer>
+
+<script>
+(() => {
+  "use strict";
+
+  const TOP = 40;
+  const canvas = document.getElementById("canvas");
+  const svg = document.getElementById("edges");
+
+  /* ---------- данные схемы ---------- */
+  const schema = {
+    roles: { x: 60, y: 0, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "name", t: "varchar", uq: true },
+      { n: "timestamps", t: "", muted: true },
+    ]},
+    permissions: { x: 60, y: 170, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "name", t: "varchar" },
+      { n: "timestamps", t: "", muted: true },
+    ]},
+    role_permissions: { x: 60, y: 340, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "role_id", t: "bigint", fk: true, ref: "roles.id" },
+      { n: "permission_id", t: "bigint", fk: true, ref: "permissions.id" },
+      { n: "timestamps", t: "", muted: true },
+    ]},
+
+    users: { x: 460, y: 0, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "name", t: "varchar" },
+      { n: "about", t: "varchar" },
+      { n: "email", t: "varchar", uq: true },
+      { n: "email_verified_at", t: "timestamp", null: true },
+      { n: "avatar", t: "varchar", null: true },
+      { n: "password", t: "varchar" },
+      { n: "remember_token", t: "varchar", null: true },
+      { n: "role_id", t: "bigint", fk: true, ref: "roles.id" },
+      { n: "timestamps", t: "", muted: true },
+    ]},
+    conversations: { x: 460, y: 430, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "user_one_id", t: "bigint", fk: true, ref: "users.id" },
+      { n: "user_two_id", t: "bigint", fk: true, ref: "users.id" },
+      { n: "(user_one_id, user_two_id)", t: "unique", uq: true },
+      { n: "timestamps", t: "", muted: true },
+    ]},
+    messages: { x: 460, y: 650, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "conversation_id", t: "bigint", fk: true, ref: "conversations.id" },
+      { n: "user_id", t: "bigint", fk: true, ref: "users.id" },
+      { n: "content", t: "varchar" },
+      { n: "read_at", t: "timestamp", null: true },
+      { n: "timestamps", t: "", muted: true },
+    ]},
+    conversation_user: { x: 460, y: 900, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "conversation_id", t: "bigint", fk: true, ref: "conversations.id" },
+      { n: "user_id", t: "bigint", fk: true, ref: "users.id" },
+      { n: "deleted_at", t: "timestamp", null: true },
+    ]},
+
+    topics: { x: 860, y: 0, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "title", t: "varchar" },
+      { n: "slug", t: "varchar" },
+      { n: "user_id", t: "bigint", fk: true, ref: "users.id" },
+      { n: "category_id", t: "bigint", fk: true, ref: "categories.id" },
+      { n: "last_post_id", t: "bigint", fk: true, null: true, ref: "posts.id" },
+      { n: "last_post_user_id", t: "bigint", fk: true, null: true, ref: "users.id" },
+      { n: "views", t: "int" },
+      { n: "locked", t: "bool" },
+      { n: "pinned", t: "bool" },
+      { n: "solved", t: "bool" },
+      { n: "timestamps", t: "", muted: true },
+    ]},
+    posts: { x: 860, y: 440, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "content", t: "mediumtext" },
+      { n: "user_id", t: "bigint", fk: true, ref: "users.id" },
+      { n: "edited", t: "bool" },
+      { n: "edited_at", t: "bool", null: true },
+      { n: "topic_id", t: "bigint", fk: true, ref: "topics.id" },
+      { n: "timestamps", t: "", muted: true },
+    ]},
+    categories: { x: 860, y: 820, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "name", t: "varchar" },
+      { n: "slug", t: "varchar", uq: true },
+      { n: "description", t: "text", null: true },
+      { n: "icon", t: "varchar", null: true },
+      { n: "parent_id", t: "bigint", fk: true, null: true, ref: "categories.id" },
+      { n: "order", t: "int" },
+      { n: "timestamps", t: "", muted: true },
+    ]},
+
+    reports: { x: 1260, y: 0, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "reportable_type", t: "varchar", morph: true },
+      { n: "reportable_id", t: "bigint", morph: true, ref: "posts | topics" },
+      { n: "user_id", t: "bigint", fk: true, ref: "users.id" },
+      { n: "moderator_id", t: "bigint", fk: true, null: true, ref: "users.id" },
+      { n: "reason", t: "varchar", null: true },
+      { n: "comment", t: "text", null: true },
+      { n: "timestamps", t: "", muted: true },
+    ]},
+    activities: { x: 1260, y: 330, cols: [
+      { n: "id", t: "bigint", pk: true },
+      { n: "user_id", t: "bigint", fk: true, ref: "users.id" },
+      { n: "subject_type", t: "varchar", morph: true },
+      { n: "subject_id", t: "bigint", morph: true, ref: "posts | topics" },
+      { n: "action", t: "varchar" },
+      { n: "description", t: "text", null: true },
+      { n: "timestamps", t: "", muted: true },
+    ]},
+  };
+
+  /* ---------- связи ---------- */
+  const edges = [
+    { f: ["users", "role_id"], t: ["roles", "id"], k: "fk" },
+
+    { f: ["role_permissions", "role_id"], t: ["roles", "id"], k: "pivot", side: "left", off: 0 },
+    { f: ["role_permissions", "permission_id"], t: ["permissions", "id"], k: "pivot", side: "left", off: 14 },
+
+    { f: ["topics", "user_id"], t: ["users", "id"], k: "fk" },
+    { f: ["topics", "category_id"], t: ["categories", "id"], k: "fk", side: "right", off: 0 },
+    { f: ["topics", "last_post_id"], t: ["posts", "id"], k: "extra", side: "left", off: 0 },
+    { f: ["topics", "last_post_user_id"], t: ["users", "id"], k: "extra" },
+
+    { f: ["posts", "user_id"], t: ["users", "id"], k: "fk" },
+    { f: ["posts", "topic_id"], t: ["topics", "id"], k: "fk", side: "left", off: 16 },
+
+    { f: ["conversations", "user_one_id"], t: ["users", "id"], k: "fk", side: "left", off: 0 },
+    { f: ["conversations", "user_two_id"], t: ["users", "id"], k: "fk", side: "left", off: 14 },
+
+    { f: ["messages", "conversation_id"], t: ["conversations", "id"], k: "fk", side: "left", off: 0 },
+    { f: ["messages", "user_id"], t: ["users", "id"], k: "fk", side: "left", off: 28 },
+
+    { f: ["conversation_user", "conversation_id"], t: ["conversations", "id"], k: "pivot", side: "right", off: 0 },
+    { f: ["conversation_user", "user_id"], t: ["users", "id"], k: "pivot", side: "right", off: 14 },
+
+    { f: ["reports", "user_id"], t: ["users", "id"], k: "fk", far: true, off: 0 },
+    { f: ["reports", "moderator_id"], t: ["users", "id"], k: "fk", far: true, off: 1 },
+    { f: ["activities", "user_id"], t: ["users", "id"], k: "fk", far: true, off: 2 },
+
+    { f: ["reports", "reportable_id"], t: ["posts", "id"], k: "morph" },
+    { f: ["activities", "subject_id"], t: ["topics", "id"], k: "morph" },
+  ];
+
+  /* ---------- рендер карточек ---------- */
+  const cardEls = {};
+  const adjacency = {};
+
+  for (const [name, def] of Object.entries(schema)) {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.table = name;
+    card.style.left = def.x + "px";
+    card.style.top = (TOP + def.y) + "px";
+
+    const head = document.createElement("div");
+    head.className = "card-head";
+    head.innerHTML = `<span>${name}</span><span class="tcount">${def.cols.length}</span>`;
+    card.appendChild(head);
+
+    for (const c of def.cols) {
+      const row = document.createElement("div");
+      row.className = "row" + (c.fk ? " fk-row" : "") + (c.morph ? " morph-row" : "") + (c.muted ? " muted" : "");
+      row.dataset.col = c.n;
+
+      let badge = "";
+      if (c.pk) badge = `<span class="b pk">PK</span>`;
+      else if (c.fk) badge = `<span class="b fk">FK</span>`;
+      else if (c.morph) badge = `<span class="b mp">MORPH</span>`;
+      else if (c.uq) badge = `<span class="b uq">UQ</span>`;
+
+      if (c.ref) row.title = `→ ${c.ref}`;
+
+      row.innerHTML =
+        `<span class="bslot">${badge}</span>` +
+        `<span class="cname">${c.n}${c.null ? '<span class="nullmark">null</span>' : ""}</span>` +
+        `<span class="ctype">${c.t || ""}</span>`;
+
+      card.appendChild(row);
+    }
+
+    canvas.appendChild(card);
+    cardEls[name] = card;
+    adjacency[name] = new Set();
+  }
+
+  for (const e of edges) {
+    adjacency[e.f[0]].add(e.t[0]);
+    adjacency[e.t[0]].add(e.f[0]);
+  }
+
+  /* ---------- геометрия ---------- */
+  const canvasRect = () => canvas.getBoundingClientRect();
+
+  function anchor(rowEl, side) {
+    const r = rowEl.getBoundingClientRect();
+    const c = canvasRect();
+    return {
+      x: (side === "left" ? r.left : r.right) - c.left,
+      y: r.top + r.height / 2 - c.top,
+    };
+  }
+
+  function orth(points, radius = 9) {
+    const pts = points.filter((p, i, arr) => i === 0 || p.x !== arr[i - 1].x || p.y !== arr[i - 1].y);
+    let d = `M ${pts[0].x} ${pts[0].y}`;
+    for (let i = 1; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1], p1 = pts[i], p2 = pts[i + 1];
+      const len1 = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+      const len2 = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+      if (!len1 || !len2) continue;
+      const rr = Math.min(radius, len1 / 2, len2 / 2);
+      const a = { x: p1.x - ((p1.x - p0.x) / len1) * rr, y: p1.y - ((p1.y - p0.y) / len1) * rr };
+      const b = { x: p1.x + ((p2.x - p1.x) / len2) * rr, y: p1.y + ((p2.y - p1.y) / len2) * rr };
+      d += ` L ${a.x} ${a.y} Q ${p1.x} ${p1.y} ${b.x} ${b.y}`;
+    }
+    const last = pts[pts.length - 1];
+    d += ` L ${last.x} ${last.y}`;
+    return d;
+  }
+
+  function makePath(conn) {
+    const [ft, fc] = conn.f;
+    const [tt, tc] = conn.t;
+    const sCard = cardEls[ft];
+    const tCard = cardEls[tt];
+    const sRow = sCard.querySelector(`[data-col="${CSS.escape(fc)}"]`);
+    const tRow = tCard.querySelector(`[data-col="${CSS.escape(tc)}"]`);
+    const sx = sCard.offsetLeft;
+    const tx = tCard.offsetLeft;
+    const kind = conn.k || "fk";
+    let d;
+
+    // самоссылка (categories.parent_id → categories.id)
+    if (ft === tt) {
+      const lane = sx - 26 - (conn.off || 0);
+      const a = anchor(sRow, "left");
+      const b = anchor(tRow, "left");
+      d = orth([
+        { x: a.x, y: a.y },
+        { x: lane, y: a.y },
+        { x: lane, y: b.y },
+        { x: b.x, y: b.y },
+      ]);
+    }
+    // один столбец: вертикальная трасса в зазоре
+    else if (Math.abs(sx - tx) < 10) {
+      const side = conn.side || "right";
+      const base = side === "right" ? sx + sCard.offsetWidth + 22 : sx - 22;
+      const lane = side === "right" ? base + (conn.off || 0) : base - (conn.off || 0);
+      const a = anchor(sRow, side);
+      const b = anchor(tRow, side);
+      d = orth([
+        { x: a.x, y: a.y },
+        { x: lane, y: a.y },
+        { x: lane, y: b.y },
+        { x: b.x, y: b.y },
+      ]);
+    }
+    // дальние: через верхнюю шину, падаем на шапку целевой таблицы
+    else if (conn.far || Math.abs(sx - tx) > 500) {
+      const dir = tx > sx ? 1 : -1;
+      const a = anchor(sRow, dir > 0 ? "right" : "left");
+      const outX = a.x + dir * 30;
+      const corridorY = 10 + (conn.off || 0) * 9;
+      const dropX = tx + 50 + (conn.off || 0) * 30;
+      d = orth([
+        { x: a.x, y: a.y },
+        { x: outX, y: a.y },
+        { x: outX, y: corridorY },
+        { x: dropX, y: corridorY },
+        { x: dropX, y: tCard.offsetTop },
+      ]);
+    }
+    // соседние столбцы: плавная кривая в зазоре
+    else {
+      const dir = tx > sx ? 1 : -1;
+      const a = anchor(sRow, dir > 0 ? "right" : "left");
+      const b = anchor(tRow, dir > 0 ? "left" : "right");
+      const mid = (a.x + b.x) / 2;
+      d = `M ${a.x} ${a.y} C ${mid} ${a.y}, ${mid} ${b.y}, ${b.x} ${b.y}`;
+    }
+
+    const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    p.setAttribute("d", d);
+    p.setAttribute("class", `edge ${kind}`);
+    p.setAttribute("marker-end", `url(#ar-${kind})`);
+    p.dataset.from = ft;
+    p.dataset.to = tt;
+
+    const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+    title.textContent = `${ft}.${fc} → ${tt}.${tc}`;
+    p.appendChild(title);
+
+    return p;
+  }
+
+  function draw() {
+    svg.querySelectorAll("path.edge").forEach((p) => p.remove());
+    for (const conn of edges) svg.appendChild(makePath(conn));
+  }
+
+  function layout() {
+    let maxY = 0;
+    for (const card of Object.values(cardEls)) {
+      maxY = Math.max(maxY, card.offsetTop + card.offsetHeight);
+    }
+    const w = canvas.offsetWidth;
+    const h = maxY + 70;
+    canvas.style.height = h + "px";
+    svg.setAttribute("width", w);
+    svg.setAttribute("height", h);
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    draw();
+  }
+
+  /* ---------- интерактив ---------- */
+  let pinned = null;
+  let hovered = null;
+
+  function applyFocus() {
+    const target = pinned || hovered;
+    const related = target ? adjacency[target] : null;
+
+    svg.querySelectorAll("path.edge").forEach((p) => {
+      const on = !!target && (p.dataset.from === target || p.dataset.to === target);
+      p.classList.toggle("active", on);
+      p.classList.toggle("dim", !!target && !on);
+    });
+
+    for (const [name, card] of Object.entries(cardEls)) {
+      const on = !target || name === target || related.has(name);
+      card.classList.toggle("dim", !on);
+      card.classList.toggle("pinned", name === pinned);
+    }
+  }
+
+  canvas.addEventListener("mouseover", (ev) => {
+    const card = ev.target.closest(".card");
+    if (!card) return;
+    hovered = card.dataset.table;
+    applyFocus();
+  });
+
+  canvas.addEventListener("mouseleave", () => {
+    hovered = null;
+    applyFocus();
+  });
+
+  canvas.addEventListener("click", (ev) => {
+    const card = ev.target.closest(".card");
+    if (!card) {
+      pinned = null;
+      applyFocus();
+      return;
+    }
+    pinned = pinned === card.dataset.table ? null : card.dataset.table;
+    applyFocus();
+  });
+
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape") {
+      pinned = null;
+      hovered = null;
+      applyFocus();
+    }
+  });
+
+  window.addEventListener("resize", () => layout());
+
+  /* ---------- старт ---------- */
+  const stats = document.getElementById("stats");
+  stats.textContent =
+    `построено по database/migrations · ${Object.keys(schema).length} таблиц · ${edges.length} связей`;
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(layout);
+  } else {
+    window.addEventListener("load", layout);
+  }
+})();
+</script>
+</body>
+</html>

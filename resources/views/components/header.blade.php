@@ -219,11 +219,13 @@
                     <a
                         href="{{ route('login') }}"
                         class="forum-login-button"
+                        aria-label="Авторизоваться"
+                        title="Авторизоваться"
                     >
 
                         <i class="bi bi-box-arrow-in-right"></i>
 
-                        Авторизоваться
+                        <span class="forum-login-label">Авторизоваться</span>
 
                     </a>
 

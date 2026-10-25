@@ -68,7 +68,7 @@ new class extends Component {
     <input
         wire:model.live.debounce.300ms="search"
         type="text"
-        class="form-control form-control-lg shadow-sm"
+        class="form-control form-control-lg shadow-sm forum-search-input"
         placeholder="Поиск..."
     >
 

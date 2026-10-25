@@ -3,20 +3,10 @@
 
     <div class="container py-4">
 
-    {{-- Breadcrumb --}}
-    <nav class="mb-3">
-        <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item">
-                <a href="{{ route('home') }}" class="text-decoration-none">
-                    Форум
-                </a>
-            </li>
-
-            <li class="breadcrumb-item active">
-                Пользователи
-            </li>
-        </ol>
-    </nav>
+    <x-breadcrumb :items="[
+        ['label' => 'Форум', 'url' => route('home')],
+        ['label' => 'Пользователи'],
+    ]" />
 
 
     <div class="forum-card">

@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::query()->latest()->paginate(20);
+        $search = is_string($request->query('search')) ? trim($request->query('search')) : '';
+
+        $users = User::query()
+            ->search($search)
+            ->latest()
+            ->paginate(20)
+            ->withQueryString();
+
         return view('user.index', compact('users'));
     }
 }

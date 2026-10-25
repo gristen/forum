@@ -3,6 +3,7 @@
 use App\Http\Controllers\admin\AdminCategoryController;
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\AdminRoleController;
+use App\Http\Controllers\admin\AdminUserController;
 use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\auth\LogoutController;
 use App\Http\Controllers\auth\RegisterController;
@@ -45,6 +46,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard',[AdminController::class, "index"])->name('index');
     Route::resource('/categories', AdminCategoryController::class);
     Route::resource('/roles', AdminRoleController::class);
+    Route::resource('/users', AdminUserController::class)->only(['index', 'show', 'edit', 'update', 'destroy']);
+
+    Route::post('/users/{user}/ban', [AdminUserController::class, 'ban'])->name('users.ban');
+    Route::delete('/users/{user}/ban', [AdminUserController::class, 'unban'])->name('users.unban');
 
 });
 

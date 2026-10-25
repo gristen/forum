@@ -1714,3 +1714,90 @@ body{
         grid-template-columns: 1fr;
     }
 }
+
+
+/* =========================================================
+   ADMIN LAYOUT — COMPACT SIDEBAR (TABLET / MOBILE)
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .admin-sidebar {
+        display: flex;
+        flex-direction: column;
+
+        width: 72px;
+    }
+
+    .admin-sidebar-brand {
+        justify-content: center;
+
+        height: 68px;
+        padding: 0;
+    }
+
+    .admin-sidebar-brand-text {
+        display: none;
+    }
+
+    .admin-sidebar-nav {
+        padding: 12px 10px;
+    }
+
+    .admin-nav-item {
+        justify-content: center;
+
+        gap: 0;
+
+        padding: 0;
+    }
+
+    .admin-nav-item span {
+        display: none;
+    }
+
+    .admin-nav-item i {
+        width: auto;
+
+        font-size: 18px;
+    }
+
+    .admin-nav-item.active::before {
+        height: 18px;
+    }
+
+    .admin-sidebar-bottom {
+        padding: 10px;
+    }
+
+    .admin-content {
+        width: calc(100% - 72px);
+
+        margin-left: 72px;
+
+        padding: 20px 16px;
+    }
+
+    .admin-page {
+        padding: 10px 0 40px;
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .admin-form-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .admin-form-actions-left,
+    .admin-form-actions-right {
+        flex-wrap: wrap;
+    }
+
+    .admin-form-actions-right {
+        justify-content: flex-end;
+    }
+
+}

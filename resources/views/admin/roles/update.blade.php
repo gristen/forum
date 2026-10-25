@@ -6,11 +6,13 @@
         {{-- HEADER --}}
         <header class="role-page-header">
             <div class="role-page-heading">
-                <div class="role-breadcrumb">
-                    <a href="{{ route('admin.roles.index') }}">Управление ролями</a>
-                    <i class="bi bi-chevron-right"></i>
-                    <span>Редактирование</span>
-                </div>
+                <x-admin.breadcrumb
+                    class="role-breadcrumb"
+                    :items="[
+                        ['label' => 'Управление ролями', 'url' => route('admin.roles.index')],
+                        ['label' => 'Редактирование'],
+                    ]"
+                />
 
                 <div class="role-title-row">
                     <div class="role-title-icon">

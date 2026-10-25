@@ -1,7 +1,7 @@
 @extends("components.app")
 
 @section("content")
-    <div class="container py-5">
+    <div class="container py-5 forum-auth">
 
         <div class="row justify-content-center">
 

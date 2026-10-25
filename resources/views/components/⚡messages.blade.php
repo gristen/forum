@@ -271,29 +271,10 @@ new class extends Component {
     <div class="container py-4">
 
 
-        {{-- =====================================================
-             BREADCRUMB
-        ====================================================== --}}
-
-        <nav class="forum-breadcrumb mb-3">
-
-            <ol class="breadcrumb mb-0">
-
-                <li class="breadcrumb-item">
-
-                    <a href="{{ route('home') }}">
-                        Форум
-                    </a>
-
-                </li>
-
-                <li class="breadcrumb-item active">
-                    Личные сообщения
-                </li>
-
-            </ol>
-
-        </nav>
+        <x-breadcrumb :items="[
+            ['label' => 'Форум', 'url' => route('home')],
+            ['label' => 'Личные сообщения'],
+        ]" />
 
 
 

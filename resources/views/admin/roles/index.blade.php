@@ -8,13 +8,11 @@
         <div class="admin-header">
 
             <div>
-                <div class="admin-breadcrumb">
-                    <span>Админ-панель</span>
-                    <i class="bi bi-chevron-right"></i>
-                    <span>Пользователи</span>
-                    <i class="bi bi-chevron-right"></i>
-                    <span>Роли</span>
-                </div>
+                <x-admin.breadcrumb :items="[
+                    ['label' => 'Админ-панель'],
+                    ['label' => 'Пользователи'],
+                    ['label' => 'Роли'],
+                ]" />
 
                 <h1 class="admin-title">
                     Роли

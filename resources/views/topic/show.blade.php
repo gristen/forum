@@ -6,36 +6,14 @@
 
         <div class="container py-4">
 
-            {{-- =====================================================
-                 BREADCRUMBS
-            ====================================================== --}}
-
-            <nav class="forum-breadcrumb mb-3">
-
-                <ol class="breadcrumb mb-0">
-
-                    <li class="breadcrumb-item">
-                        <a href="#">
-                            Форум
-                        </a>
-                    </li>
-
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('category.show', [
-                            'category' => $topic->category,
-                            'slug' => $topic->category->slug
-                        ]) }}">
-                            {{ $topic->category->name }}
-                        </a>
-                    </li>
-
-                    <li class="breadcrumb-item active">
-                        {{ $topic->short_title }}
-                    </li>
-
-                </ol>
-
-            </nav>
+            <x-breadcrumb :items="[
+                ['label' => 'Форум', 'url' => route('home')],
+                ['label' => $topic->category->name, 'url' => route('category.show', [
+                    'category' => $topic->category,
+                    'slug' => $topic->category->slug,
+                ])],
+                ['label' => $topic->short_title],
+            ]" />
 
 
             {{-- =====================================================

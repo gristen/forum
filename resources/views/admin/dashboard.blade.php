@@ -8,11 +8,10 @@
         <div class="admin-header">
 
             <div>
-                <div class="admin-breadcrumb">
-                    <span>Админ-панель</span>
-                    <i class="bi bi-chevron-right"></i>
-                    <span>Dashboard</span>
-                </div>
+                <x-admin.breadcrumb :items="[
+                    ['label' => 'Админ-панель'],
+                    ['label' => 'Dashboard'],
+                ]" />
 
                 <h1 class="admin-title">
                     Панель управления
@@ -103,7 +102,7 @@
 
                     <div class="admin-actions-grid">
 
-                        <a href="#" class="admin-action-card">
+                        <a href="{{ route('admin.categories.create') }}" class="admin-action-card">
 
                             <div class="admin-action-icon purple">
                                 <i class="bi bi-folder-plus"></i>
@@ -119,7 +118,7 @@
                         </a>
 
 
-                        <a href="#" class="admin-action-card">
+                        <a href="{{ route('admin.users.index') }}" class="admin-action-card">
 
                             <div class="admin-action-icon green">
                                 <i class="bi bi-people-fill"></i>
@@ -135,7 +134,7 @@
                         </a>
 
 
-                        <a href="#" class="admin-action-card">
+                        <a href="{{ route('admin.roles.index') }}" class="admin-action-card">
 
                             <div class="admin-action-icon yellow">
                                 <i class="bi bi-shield-check"></i>
@@ -197,7 +196,7 @@
 
                     <div class="admin-table">
 
-                        @forelse($latestTopics ?? [] as $topic)
+                        @forelse($dashboardData['latestTopics'] ?? [] as $topic)
 
                             <div class="admin-table-row">
 
