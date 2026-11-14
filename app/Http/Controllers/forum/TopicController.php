@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Topic;
+use App\Services\ActivityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -60,6 +61,9 @@ class TopicController extends Controller
             "user_id" => $userId,
         ]);
         debugbar()->info($createdTopic,$createdPost);
+
+        /* логируем только тему: первое сообщение к ней — часть того же действия */
+        app(ActivityService::class)->log('created', $createdTopic);
 
         return redirect()->route('topic.show', [
             'topic' => $createdTopic,

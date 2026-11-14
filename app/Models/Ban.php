@@ -65,4 +65,12 @@ class Ban extends Model
         return is_null($this->lifted_at)
             && (is_null($this->expires_at) || $this->expires_at->isFuture());
     }
+
+    /**
+     * Как бан зовут в логе активностей — по забаненному пользователю.
+     */
+    public function getActivityName(): string
+    {
+        return $this->user?->name ?? '—';
+    }
 }

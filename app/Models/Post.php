@@ -23,4 +23,12 @@ class Post extends Model
     {
         return $this->belongsTo(Topic::class);
     }
+
+    /**
+     * Как сообщение зовут в логе активностей.
+     */
+    public function getActivityName(): string
+    {
+        return $this->topic?->title ?? 'без темы';
+    }
 }

@@ -38,4 +38,12 @@ class Role extends Model
     {
         return $this->belongsToMany(Permission::class,'role_permissions');
     }
+
+    /**
+     * Как роль зовут в логе активностей — по её человекочитаемому имени.
+     */
+    public function getActivityName(): string
+    {
+        return $this->display_name;
+    }
 }

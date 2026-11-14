@@ -44,4 +44,12 @@ class Topic extends Model
         return $this->hasMany(Post::class);
     }
 
+    /**
+     * Как тему зовут в логе активностей.
+     */
+    public function getActivityName(): string
+    {
+        return $this->title;
+    }
+
 }

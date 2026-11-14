@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Services\ActivityService;
 
 class RegisterController extends Controller
 {
@@ -29,6 +30,8 @@ class RegisterController extends Controller
 
         $user = User::create($data);
         Auth::login($user);
+
+        app(ActivityService::class)->log('register', $user, $user);
 
         return redirect('/', 301, ['message' => 'reg success']);
 

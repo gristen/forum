@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\ActivityService;
 use App\Services\DashboardService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -62,6 +63,7 @@ class AdminUserController extends Controller
 
     public function show(User $user)
     {
+
         $topics = $user->topics()
             ->withCount('posts')
             ->latest()
@@ -163,6 +165,8 @@ class AdminUserController extends Controller
 
         $user->update($data);
 
+        app(ActivityService::class)->log('updated', $user);
+
         return redirect()
             ->route('admin.users.show', $user)
             ->with('success', 'Профиль пользователя обновлён.');
@@ -187,6 +191,9 @@ class AdminUserController extends Controller
             $user->delete();
         });
 
+        /* инстанс ещё в памяти — имя доступно для описания */
+        app(ActivityService::class)->log('deleted', $user);
+
         return redirect()
             ->route('admin.users.index')
             ->with('success', "Пользователь «{$name}» удалён.");
@@ -210,13 +217,15 @@ class AdminUserController extends Controller
                 ->with('error', 'Пользователь уже забанен.');
         }
 
-        $user->bans()->create([
+        $ban = $user->bans()->create([
             'banned_by' => auth()->id(),
             'reason' => $data['reason'],
             'expires_at' => $data['duration'] === 'permanent'
                 ? null
                 : now()->addDays((int) $data['duration']),
         ]);
+
+        app(ActivityService::class)->log('banned', $ban);
 
         return redirect()
             ->route('admin.users.show', $user)
@@ -231,9 +240,14 @@ class AdminUserController extends Controller
                 ->with('error', 'Пользователь не забанен.');
         }
 
-        $user->bans()
+        $ban = $user->bans()
             ->active()
-            ->update(['lifted_at' => now()]);
+            ->latest()
+            ->first();
+
+        $ban->update(['lifted_at' => now()]);
+
+        app(ActivityService::class)->log('unbanned', $ban);
 
         return redirect()
             ->route('admin.users.show', $user)

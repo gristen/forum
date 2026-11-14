@@ -3,6 +3,7 @@
 use App\Events\MessageSent;
 use App\Models\Conversation;
 use App\Models\User;
+use App\Services\ActivityService;
 use Livewire\Component;
 use Livewire\Attributes\On;
 
@@ -228,6 +229,8 @@ new class extends Component {
                 'user_id' => auth()->id(),
                 'content' => $this->content,
             ]);
+
+        app(ActivityService::class)->log('message_sent', $message);
 
 
         /*

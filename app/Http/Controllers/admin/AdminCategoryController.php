@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Services\ActivityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -52,7 +53,9 @@ class AdminCategoryController extends Controller
         $data['icon'] = $data['icon'] ?: self::DEFAULT_ICON;
         $data['order'] = $data['order'] ?? 0;
 
-        Category::query()->create($data);
+        $category = Category::query()->create($data);
+
+        app(ActivityService::class)->log('created', $category);
 
         return redirect()
             ->route('admin.categories.index')
@@ -98,6 +101,8 @@ class AdminCategoryController extends Controller
 
         $category->update($data);
 
+        app(ActivityService::class)->log('updated', $category);
+
         return redirect()
             ->route('admin.categories.index')
             ->with('success', "Категория «{$category->name}» обновлена.");
@@ -122,6 +127,9 @@ class AdminCategoryController extends Controller
 
         $name = $category->name;
         $category->delete();
+
+        /* инстанс ещё в памяти — имя доступно для описания */
+        app(ActivityService::class)->log('deleted', $category);
 
         return redirect()
             ->route('admin.categories.index')
