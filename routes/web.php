@@ -41,7 +41,9 @@ Route::get('/messages', [MessageController::class, "index"])->name('messages');
 
 Route::get('/users',[UserController::class, "index"])->name('users.index');
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')
+    ->middleware(['auth', 'admin'])
+    ->name('admin.')->group(function () {
 
     Route::get('/dashboard',[AdminController::class, "index"])->name('index');
     Route::resource('/categories', AdminCategoryController::class);

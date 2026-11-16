@@ -80,7 +80,8 @@ class PermissionSeeder extends Seeder
     {
         foreach ($this->permissions as $permission) {
             Permission::query()->firstOrCreate([
-                'name' => $permission
+                'name' => $permission,
+                'created_at' => now(),
             ]);
 
         }
