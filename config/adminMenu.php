@@ -8,6 +8,18 @@ return [
             'title' => 'Дашборд',
         ],
         [
+            'route' => 'admin.system',
+            'active' => 'admin.system',
+            'icon' => 'bi-cpu-fill',
+            'title' => 'Система',
+        ],
+        [
+            'route' => 'admin.appearance',
+            'active' => 'admin.appearance',
+            'icon' => 'bi-palette-fill',
+            'title' => 'Оформление',
+        ],
+        [
             'route' => 'admin.users.index',
             'active' => 'admin.users.*',
             'icon' => 'bi-people-fill',

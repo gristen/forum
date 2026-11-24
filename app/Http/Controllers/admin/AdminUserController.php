@@ -8,30 +8,15 @@ use App\Models\User;
 use App\Services\ActivityService;
 use App\Services\DashboardService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
 class AdminUserController extends Controller
 {
-    private const PER_PAGE = 20;
-
-    public function index(Request $request, DashboardService $dashboardService)
+    public function index(DashboardService $dashboardService)
     {
-        $search = is_string($request->query('search')) ? trim($request->query('search')) : '';
-        $role = is_string($request->query('role')) ? $request->query('role') : '';
-        $sort = is_string($request->query('sort')) ? $request->query('sort') : 'latest';
-        debugbar()->info($request);
-        $users = User::query()
-            ->with('role')
-            ->withCount(['topics', 'posts'])
-            ->with(['bans' => fn ($query) => $query->active()])
-            ->search($search)
-            ->filterByRole($role)
-            ->sorted($sort)
-            ->paginate(self::PER_PAGE)
-            ->withQueryString();
-
         $monthly = $dashboardService->getMonthlyRegistrations();
 
         $stats = [
@@ -49,15 +34,10 @@ class AdminUserController extends Controller
         ];
 
         return view('admin.users.index', [
-            'users' => $users,
-            'roles' => Role::query()->withCount('users')->orderBy('name')->get(),
             'stats' => $stats,
             'monthly' => $monthly,
             'monthlyMax' => max(1, ...array_values($monthly)),
             'monthlyTotal' => array_sum($monthly),
-            'search' => $search,
-            'role' => $role,
-            'sort' => $sort,
         ]);
     }
 
@@ -82,9 +62,14 @@ class AdminUserController extends Controller
             ->limit(5)
             ->get();
 
-        $lastActivityAt = $user->topics()->max('created_at')
-            ?? $user->posts()->max('created_at')
-            ?? $user->sentMessages()->max('created_at');
+        // max() возвращает строку из БД, а не Carbon — приводим к дате заранее.
+        $lastActivityAt = collect([
+            $user->topics()->max('created_at'),
+            $user->posts()->max('created_at'),
+            $user->sentMessages()->max('created_at'),
+        ])->filter()
+            ->map(fn ($date) => Carbon::parse($date))
+            ->max();
 
         $lastSession = Schema::hasTable('sessions')
             ? DB::table('sessions')

@@ -17,7 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin'=>'App\Http\Middleware\AdminMiddleware',
         ]);
 
-
+        $middleware->web(append: [
+            \App\Http\Middleware\ResolveTheme::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

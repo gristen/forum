@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\admin\AdminAppearanceController;
 use App\Http\Controllers\admin\AdminCategoryController;
 use App\Http\Controllers\admin\AdminController;
 use App\Http\Controllers\admin\AdminRoleController;
+use App\Http\Controllers\admin\AdminSystemController;
 use App\Http\Controllers\admin\AdminUserController;
 use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\auth\LogoutController;
@@ -12,6 +14,7 @@ use App\Http\Controllers\forum\IndexController;
 use App\Http\Controllers\forum\TopicController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\user\ProfileController;
+use App\Http\Controllers\user\ThemeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,11 +44,17 @@ Route::get('/messages', [MessageController::class, "index"])->name('messages');
 
 Route::get('/users',[UserController::class, "index"])->name('users.index');
 
+Route::post('/theme', [ThemeController::class, 'update'])
+    ->middleware('auth')
+    ->name('theme.update');
+
 Route::prefix('admin')
     ->middleware(['auth', 'admin'])
     ->name('admin.')->group(function () {
 
     Route::get('/dashboard',[AdminController::class, "index"])->name('index');
+    Route::get('/system', AdminSystemController::class)->name('system');
+    Route::get('/appearance', AdminAppearanceController::class)->name('appearance');
     Route::resource('/categories', AdminCategoryController::class);
     Route::resource('/roles', AdminRoleController::class);
     Route::resource('/users', AdminUserController::class)->only(['index', 'show', 'edit', 'update', 'destroy']);

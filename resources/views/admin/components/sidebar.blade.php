@@ -112,6 +112,8 @@
             <span>На форум</span>
         </a>
 
+        @livewire('admin.theme-switcher')
+
     </div>
 
 </aside>

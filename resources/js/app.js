@@ -14,4 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         toast.show();
     }
+
+    document.querySelectorAll('[data-theme-switcher]').forEach((select) => {
+        select.addEventListener('change', () => select.form.submit());
+    });
 });

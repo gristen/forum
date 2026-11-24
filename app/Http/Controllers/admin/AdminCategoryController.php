@@ -170,13 +170,13 @@ class AdminCategoryController extends Controller
     private function parentsTree(?Category $category = null)
     {
         $categories = Category::query()
-            ->orderBy('order')
-            ->orderBy('name')
             ->get();
 
-        if (! $category) {
+        debugbar()->info($categories->toArray());
+
+      /*  if (! $category) {
             return $categories;
-        }
+        }*/
 
         return $categories
             ->reject(fn (Category $candidate) => $this->isSameOrAncestorOfSelf($candidate, $category))
@@ -197,6 +197,7 @@ class AdminCategoryController extends Controller
             }
 
             $current = $current->parent;
+
         }
 
         return false;
@@ -253,6 +254,6 @@ class AdminCategoryController extends Controller
 
     public function test()
     {
-       
+
     }
 }

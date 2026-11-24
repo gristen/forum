@@ -242,14 +242,13 @@
                             {{ $user->about ?: 'Пользователь пока ничего о себе не рассказал.' }}
                         </p>
 
-                        <div class="admin-user-profile-role">
-
-                            <span class="admin-user-role {{ str_replace('bg-', '', $user->role?->badge_class ?? 'secondary') }}">
-                                <i class="bi {{ $user->role?->icon_class }}"></i>
-                                {{ $user->role?->display_name ?? 'Без роли' }}
-                            </span>
-
+                        <div class="profile-role">
+                                <span class="badge {{ $user->role?->badge_class }}">
+                                    <i class="{{ $user->role?->icon_class }}"></i>
+                                    {{ $user->role?->display_name ?? 'Без роли' }}
+                                </span>
                         </div>
+
 
                     </div>
 

@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru"
+      data-admin-theme="{{ auth()->user()?->admin_theme ?? 'dark' }}">
 
 <head>
     <meta charset="UTF-8">

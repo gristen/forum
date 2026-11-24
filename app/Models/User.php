@@ -28,6 +28,8 @@ class User extends Authenticatable
         'password',
         'role_id',
         'about',
+        'theme',
+        'admin_theme',
         ];
 
     public function role()
@@ -37,7 +39,7 @@ class User extends Authenticatable
 
     public function hasPermission($permission): bool
     {
-        return $this->role->permissions()->where('name', $permission)->exists();
+        return $this->role?->permissions()->where('name', $permission)->exists() ?? false;
 
     }
     public function topics()

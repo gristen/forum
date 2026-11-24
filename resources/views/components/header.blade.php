@@ -158,6 +158,44 @@
                             </li>
 
 
+                            {{-- Тема оформления --}}
+
+                            <li class="forum-theme-item">
+
+                                <i class="bi bi-palette"></i>
+
+                                <form method="POST" action="{{ route('theme.update') }}">
+
+                                    @csrf
+
+                                    <select
+                                        name="theme"
+                                        data-theme-switcher
+                                        aria-label="Тема оформления"
+                                    >
+
+                                        <option value="">
+                                            Как на форуме
+                                        </option>
+
+                                        @foreach(config('themes', []) as $themeKey => $themeOption)
+
+                                            <option
+                                                value="{{ $themeKey }}"
+                                                @selected(auth()->user()->theme === $themeKey)
+                                            >
+                                                {{ $themeOption['label'] }}
+                                            </option>
+
+                                        @endforeach
+
+                                    </select>
+
+                                </form>
+
+                            </li>
+
+
                             {{-- Настройки --}}
 
                             <li>
