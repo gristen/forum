@@ -1,0 +1,170 @@
+/* =========================================================
+   ADMIN THEME — дизайн-токены админ-панели
+   ---------------------------------------------------------
+   Базовая палитра — тёмная (как было), светлая включается
+   атрибутом <html data-admin-theme="light">.
+
+   Токены называют роль, а не цвет: bg / surface / border /
+   text / accent / статусы. Палитра админки не зависит от
+   форумных токенов из index.css.
+   ========================================================= */
+
+:root {
+    /* ФОНЫ */
+    --adm-bg: #0f1116;
+    --adm-surface: #171a21;
+    --adm-surface-2: #1c2028;
+    --adm-surface-3: #20242d;
+    --adm-surface-4: #242933;
+    --adm-surface-5: #292a35;
+
+    /* ГРАНИЦЫ */
+    --adm-border: #252a34;
+    --adm-border-2: #2c3240;
+    --adm-border-3: #343a47;
+    --adm-border-4: #3a414e;
+
+    /* ТЕКСТ */
+    --adm-text: #e5e7eb;
+    --adm-text-strong: #ffffff;
+    --adm-text-bright: #f3f4f6;
+    --adm-text-2: #c7cbd4;
+    --adm-text-3: #9ca3af;
+    --adm-text-4: #737b8c;
+    --adm-text-5: #626a79;
+
+    /* АКЦЕНТ (фиолетовый) */
+    --adm-accent: #8b5cf6;
+    --adm-accent-hover: #7c3aed;
+    --adm-accent-start: #986bff;
+    --adm-accent-end: #7542e5;
+    --adm-accent-text: #a78bfa;
+    --adm-accent-text-2: #c4b5fd;
+    --adm-accent-text-3: #e0d5ff;
+    --adm-accent-deep: #45316c;
+    --adm-accent-contrast: #ffffff;
+
+    /* СТАТУСЫ */
+    --adm-danger: #f87171;
+    --adm-danger-strong: #ef4444;
+    --adm-danger-soft: #fca5a5;
+
+    --adm-success: #4ade80;
+    --adm-success-strong: #22c55e;
+
+    --adm-warning: #facc15;
+    --adm-warning-strong: #f59e0b;
+
+    --adm-info: #60a5fa;
+    --adm-info-strong: #3b82f6;
+
+    /* RGB-компаньоны для rgba() */
+    --adm-accent-rgb: 139, 92, 246;
+    --adm-accent-hover-rgb: 124, 58, 237;
+    --adm-accent-text-rgb: 167, 139, 250;
+
+    --adm-danger-rgb: 248, 113, 113;
+    --adm-danger-strong-rgb: 239, 68, 68;
+
+    --adm-success-rgb: 74, 222, 128;
+    --adm-success-strong-rgb: 34, 197, 94;
+
+    --adm-warning-rgb: 250, 204, 21;
+    --adm-warning-strong-rgb: 245, 158, 11;
+
+    --adm-info-rgb: 96, 165, 250;
+    --adm-info-strong-rgb: 59, 130, 246;
+
+    --adm-gray-rgb: 161, 161, 170;
+
+    /* светлые заливки/бордеры поверх фона; в светлой теме флипаются */
+    --adm-overlay-rgb: 255, 255, 255;
+    /* внутренняя подсветка на акцентных кнопках — всегда светлая */
+    --adm-highlight-rgb: 255, 255, 255;
+    --adm-shadow-rgb: 0, 0, 0;
+    --adm-popover-shadow: 0 18px 44px rgba(0, 0, 0, .45);
+}
+
+
+/* =========================================================
+   СВЕТЛАЯ ТЕМА АДМИНКИ
+   ========================================================= */
+
+[data-admin-theme="light"] {
+    --adm-bg: #eef1f7;
+    --adm-surface: #ffffff;
+    --adm-surface-2: #f7f9fc;
+    --adm-surface-3: #eff2f8;
+    --adm-surface-4: #e9edf5;
+    --adm-surface-5: #e3e8f1;
+
+    --adm-border: #e2e7ef;
+    --adm-border-2: #d5dbe6;
+    --adm-border-3: #c4cbd9;
+    --adm-border-4: #b4bccb;
+
+    --adm-text: #1a2231;
+    --adm-text-strong: #0c1120;
+    --adm-text-bright: #10182a;
+    --adm-text-2: #3b4557;
+    --adm-text-3: #556071;
+    --adm-text-4: #6c7686;
+    --adm-text-5: #828b99;
+
+    --adm-accent: #7c3aed;
+    --adm-accent-hover: #6d28d9;
+    --adm-accent-start: #8b5cf6;
+    --adm-accent-end: #6d28d9;
+    --adm-accent-text: #6d28d9;
+    --adm-accent-text-2: #5b21b6;
+    --adm-accent-text-3: #4c1d95;
+    --adm-accent-deep: #ede9fe;
+    --adm-accent-contrast: #ffffff;
+
+    --adm-danger: #dc2626;
+    --adm-danger-strong: #b91c1c;
+    --adm-danger-soft: #b91c1c;
+
+    --adm-success: #15803d;
+    --adm-success-strong: #15803d;
+
+    --adm-warning: #b45309;
+    --adm-warning-strong: #b45309;
+
+    --adm-info: #1d4ed8;
+    --adm-info-strong: #1d4ed8;
+
+    --adm-accent-rgb: 124, 58, 237;
+    --adm-accent-hover-rgb: 109, 40, 217;
+    --adm-accent-text-rgb: 109, 40, 217;
+
+    --adm-danger-rgb: 220, 38, 38;
+    --adm-danger-strong-rgb: 185, 28, 28;
+
+    --adm-success-rgb: 21, 128, 61;
+    --adm-success-strong-rgb: 21, 128, 61;
+
+    --adm-warning-rgb: 180, 83, 9;
+    --adm-warning-strong-rgb: 180, 83, 9;
+
+    --adm-info-rgb: 29, 78, 216;
+    --adm-info-strong-rgb: 29, 78, 216;
+
+    --adm-gray-rgb: 100, 116, 139;
+
+    --adm-overlay-rgb: 15, 23, 42;
+    --adm-highlight-rgb: 255, 255, 255;
+    --adm-shadow-rgb: 15, 23, 42;
+    --adm-popover-shadow: 0 18px 44px rgba(15, 23, 42, .16);
+}
+
+
+/* Нативные контролы (скроллбары, поля) в тон темы */
+
+[data-admin-theme="dark"] {
+    color-scheme: dark;
+}
+
+[data-admin-theme="light"] {
+    color-scheme: light;
+}

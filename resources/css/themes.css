@@ -1,0 +1,78 @@
+/* =========================================================
+   ТЕМЫ ОФОРМЛЕНИЯ
+   ---------------------------------------------------------
+   Базовая палитра лежит в :root (public/assets/css/index.css).
+   Тема — это набор переопределений для :root[data-theme="..."].
+
+   Атрибут data-theme ставит middleware ResolveTheme на сервере,
+   поэтому переключение происходит без мигания и без JS.
+
+   Чтобы добавить тему:
+   1) добавить запись в config/themes.php;
+   2) добавить блок :root[data-theme="ключ"] ниже.
+   ========================================================= */
+
+/* =========================================================
+   DAYLIGHT — светлая тема
+   ========================================================= */
+
+:root[data-theme="daylight"] {
+    --bg: #f2f5fb;
+
+    --surface: #ffffff;
+    --surface-2: #f7f9fd;
+    --surface-3: #eef2f9;
+
+    --border: #dfe5f0;
+    --border-light: #cfd7e6;
+    --border-strong: #c3cbdb;
+
+    --text: #111827;
+    --text-secondary: #374151;
+    --text-muted: #4b5563;
+    --text-soft: #6b7280;
+    --text-dim: #9ca3af;
+
+    --accent: #5b49d6;
+    --accent-hover: #4338ca;
+    --accent-dark: #3730a3;
+
+    --accent-2: #7c3aed;
+    --accent-2-hover: #6d28d9;
+    --accent-2-dark: #5b21b6;
+    --accent-2-deep: #4c1d95;
+    --accent-2-light: #6d28d9;
+
+    --cyan: #0e7490;
+    --green: #0f9f6e;
+    --red: #e11d48;
+    --yellow: #b45309;
+
+    --green-strong: #16a34a;
+    --red-strong: #dc2626;
+
+    --bg-rgb: 242, 245, 251;
+    --accent-rgb: 91, 73, 214;
+    --accent-2-rgb: 124, 58, 237;
+    --accent-2-light-rgb: 109, 40, 217;
+
+    --green-rgb: 15, 159, 110;
+    --green-strong-rgb: 22, 163, 74;
+    --cyan-rgb: 14, 116, 144;
+    --red-rgb: 225, 29, 72;
+    --red-strong-rgb: 220, 38, 38;
+
+    /* в светлой теме «подсветка» превращается в «затемнение» */
+    --overlay-rgb: 15, 23, 42;
+    --highlight-rgb: 255, 255, 255;
+    --shadow-rgb: 100, 116, 139;
+
+    --on-accent: #ffffff;
+    --accent-soft-text: #4338ca;
+
+    --shadow-sm:
+        0 1px 2px rgba(var(--shadow-rgb), .06),
+        0 12px 28px rgba(var(--shadow-rgb), .08);
+    --shadow-lg: 0 28px 70px rgba(var(--shadow-rgb), .14);
+    --ring: 0 0 0 3px rgba(var(--accent-rgb), .18);
+}

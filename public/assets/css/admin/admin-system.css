@@ -1,0 +1,333 @@
+/* =========================================================
+   ADMIN SYSTEM — CPU / RAM / DISK / GPU
+   ========================================================= */
+
+.sys-metrics {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.sys-toolbar {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sys-updated {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    color: var(--adm-text-4);
+    font-size: 12px;
+}
+
+.sys-updated i {
+    color: var(--adm-accent);
+    font-size: 11px;
+}
+
+
+/* GRID */
+
+.sys-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.sys-card {
+    overflow: hidden;
+
+    background: var(--adm-surface);
+    border: 1px solid var(--adm-border);
+    border-radius: 10px;
+}
+
+.sys-card-wide {
+    width: 100%;
+}
+
+.sys-card-head {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid var(--adm-border);
+}
+
+.sys-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 9px;
+
+    background: rgba(var(--adm-accent-rgb), .12);
+    color: var(--adm-accent);
+    font-size: 16px;
+}
+
+.sys-card-icon.cpu  { background: rgba(var(--adm-accent-rgb), .12); color: var(--adm-accent); }
+.sys-card-icon.ram  { background: rgba(var(--adm-info-strong-rgb), .12); color: var(--adm-info-strong); }
+.sys-card-icon.disk { background: rgba(var(--adm-warning-strong-rgb), .12); color: var(--adm-warning-strong); }
+.sys-card-icon.gpu  { background: rgba(var(--adm-success-strong-rgb), .12);  color: var(--adm-success-strong); }
+.sys-card-icon.info { background: rgba(var(--adm-gray-rgb), .15); color: var(--adm-text-3); }
+
+.sys-card-title {
+    margin: 0;
+
+    color: var(--adm-text);
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.sys-card-sub {
+    margin: 3px 0 0;
+
+    color: var(--adm-text-4);
+    font-size: 12px;
+}
+
+.sys-card-body {
+    padding: 20px;
+}
+
+
+/* VALUES */
+
+.sys-value {
+    color: var(--adm-text);
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -.5px;
+}
+
+.sys-value span {
+    margin-left: 3px;
+
+    color: var(--adm-text-4);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.sys-value.ok     { color: var(--adm-success-strong); }
+.sys-value.warn   { color: var(--adm-warning-strong); }
+.sys-value.danger { color: var(--adm-danger-strong); }
+.sys-value.idle   { color: var(--adm-text-4); }
+
+
+/* BARS */
+
+.sys-bar {
+    height: 7px;
+    margin: 13px 0 11px;
+
+    overflow: hidden;
+
+    background: var(--adm-bg);
+    border-radius: 999px;
+}
+
+.sys-bar span {
+    display: block;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background: var(--adm-success-strong);
+
+    transition: width .35s ease;
+}
+
+.sys-bar span.warn   { background: var(--adm-warning-strong); }
+.sys-bar span.danger { background: var(--adm-danger-strong); }
+.sys-bar span.idle   { background: var(--adm-surface-5); }
+
+.sys-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-top: 6px;
+
+    color: var(--adm-text-3);
+    font-size: 12px;
+}
+
+.sys-meta span:last-child {
+    color: var(--adm-text-4);
+    text-align: right;
+}
+
+
+/* CPU CORES */
+
+.sys-cores {
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+
+    margin-top: 16px;
+}
+
+.sys-core {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+
+    flex: 1;
+    min-width: 0;
+}
+
+.sys-core-track {
+    position: relative;
+
+    display: flex;
+    align-items: flex-end;
+
+    width: 100%;
+    height: 42px;
+
+    overflow: hidden;
+
+    background: var(--adm-bg);
+    border-radius: 4px;
+}
+
+.sys-core-track span {
+    display: block;
+    width: 100%;
+
+    border-radius: 4px;
+
+    background: var(--adm-success-strong);
+
+    transition: height .35s ease;
+}
+
+.sys-core-track span.warn   { background: var(--adm-warning-strong); }
+.sys-core-track span.danger { background: var(--adm-danger-strong); }
+.sys-core-track span.idle   { background: var(--adm-surface-5); }
+
+.sys-core small {
+    color: var(--adm-text-5);
+    font-size: 10px;
+}
+
+
+/* GPU CHIPS */
+
+.sys-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    margin-top: 14px;
+}
+
+.sys-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 10px;
+
+    background: var(--adm-bg);
+    border: 1px solid var(--adm-border);
+    border-radius: 999px;
+
+    color: var(--adm-text-3);
+    font-size: 12px;
+}
+
+.sys-chip i {
+    color: var(--adm-accent);
+    font-size: 12px;
+}
+
+
+/* ERROR / EMPTY */
+
+.sys-empty {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    padding: 16px;
+
+    background: rgba(var(--adm-danger-strong-rgb), .06);
+    border: 1px solid rgba(var(--adm-danger-strong-rgb), .2);
+    border-radius: 8px;
+}
+
+.sys-empty > i {
+    color: var(--adm-danger-strong);
+    font-size: 18px;
+}
+
+.sys-empty strong {
+    display: block;
+
+    color: var(--adm-text);
+    font-size: 13px;
+}
+
+.sys-empty p {
+    margin: 4px 0 0;
+
+    color: var(--adm-text-3);
+    font-size: 12px;
+}
+
+
+/* SYSTEM INFO */
+
+.sys-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 12px;
+}
+
+.sys-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    padding: 11px 13px;
+
+    background: var(--adm-bg);
+    border: 1px solid var(--adm-border);
+    border-radius: 8px;
+}
+
+.sys-info-label {
+    color: var(--adm-text-4);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+.sys-info-value {
+    overflow: hidden;
+
+    color: var(--adm-text);
+    font-size: 13px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+@media (max-width: 992px) {
+    .sys-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
